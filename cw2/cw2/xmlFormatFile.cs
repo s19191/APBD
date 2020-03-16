@@ -1,12 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace cw2
 {
     public class xmlFormatFile
     {
-        public static void save(string[] filtred, string adresDolcelowy)
+        public static void save(Uczelnia uczelnia, string adresDolcelowy)
+        {
+            FileStream writer = new FileStream(adresDolcelowy + "result.xml", FileMode.Create);
+            XmlSerializer serializer = new XmlSerializer(typeof(Uczelnia), new XmlRootAttribute("uczelnia"));
+            serializer.Serialize(writer,uczelnia);
+        }
+        public static void saveStare(string[] filtred, string adresDolcelowy)
         {
             XElement xml = new XElement("uczelnia",
                 new XAttribute("author", "Jan Kwasowski"),
