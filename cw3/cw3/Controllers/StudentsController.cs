@@ -1,4 +1,5 @@
 ﻿using System;
+using cw3.DAL;
 using cw3.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,24 @@ namespace cw3.Controllers
     [Route("api/students")]
     public class StudentsController : ControllerBase
     {
+        private readonly IDbService _dbService;
+
+        public StudentsController(IDbService dbService)
+        {
+            _dbService = dbService;
+        }
+        
         public string GetStudent(string orderBy)
         {
             return $"Kowalski, Malewski, Andrzejewski srortowanie={orderBy}";
         }
 
+        [HttpGet]
+        public IActionResult GetStudents(string orderBy)
+        {
+            return Ok(_dbService.GetStudents());
+        }
+        
         [HttpGet("{id}")]
         public IActionResult GetStudnet(int id)
         {
@@ -26,6 +40,7 @@ namespace cw3.Controllers
             }
             return NotFound("Nie znaleziono studenta");
         }
+        
         [HttpPost]
         public IActionResult CreateStudent(Studnet studnet)
         {
@@ -33,16 +48,24 @@ namespace cw3.Controllers
             return Ok(studnet);
         }
 
-        [HttpDelete]
-        public IActionResult DeleteStudnet(Studnet studnet)
+        [HttpPut("{id}")]
+        public IActionResult putStudent(int id)
         {
-            return Ok("200 Usuwanie ukończone");
+            if(id == 2)
+            {
+                return Ok("Aktualizacja dokończona");
+            }
+            return NotFound("Nie znaleziono studenta");
         }
 
-        [HttpPut]
-        public IActionResult PutStudnet(Studnet studnet)
+        [HttpDelete("{id}")]
+        public IActionResult deleteStudent(int id)
         {
-            return Ok("200 Aktualizacja dokończona");
+            if(id == 1)
+            {
+                return Ok("Usuwanie ukończone");
+            }
+            return NotFound("Nie znaleziono studenta");
         }
     }
 }
