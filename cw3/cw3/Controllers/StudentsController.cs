@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.SqlClient;
-using cw3.DAL;
 using cw3.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,24 +10,7 @@ namespace cw3.Controllers
     [Route("api/students")]
     public class StudentsController : ControllerBase
     {
-        private readonly IDbService _dbService;
         private const string ConString = "Data Source=db-mssql;Initial Catalog=s19191;Integrated Security=True";
-
-        public StudentsController(IDbService dbService)
-        {
-            _dbService = dbService;
-        }
-        
-        // public string GetStudent(string orderBy)
-        // {
-        //     return $"Kowalski, Malewski, Andrzejewski srortowanie={orderBy}";
-        // }
-
-        // [HttpGet]
-        // public IActionResult GetStudents(string orderBy)
-        // {
-        //     return Ok(_dbService.GetStudents());
-        // }
         
         [HttpGet]
         public IActionResult GetStudnet()
@@ -57,31 +38,29 @@ namespace cw3.Controllers
             return Ok(studnets);
         }
         
-        // [HttpPost]
-        // public IActionResult CreateStudent(Studnet studnet)
-        // {
-        //     studnet.IndexNumber = $"s{new Random().Next(1, 2000)}";
-        //     return Ok(studnet);
-        // }
+        //przykład SQL Injection:
+        //https://localhost:44395/api/students/1 = 1 or 2
+        //po dodaniu parametru na stronie nie wyświetliło się nic
 
-        [HttpPut("{id}")]
-        public IActionResult putStudent(int id)
-        {
-            if(id == 2)
-            {
-                return Ok("Aktualizacja dokończona");
-            }
-            return NotFound("Nie znaleziono studenta");
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult deleteStudent(int id)
-        {
-            if(id == 1)
-            {
-                return Ok("Usuwanie ukończone");
-            }
-            return NotFound("Nie znaleziono studenta");
-        }
+        [HttpGet("{IndexNumber}")]
+         public IActionResult GetSemester(string IndexNumber)
+         {
+             string result = "";
+             using (SqlConnection con = new SqlConnection(ConString))
+             using (SqlCommand com = new SqlCommand())
+             {
+                 com.Connection = con;
+                 com.CommandText = "select * from Enrollment inner join Student on Student.IdEnrollment=Enrollment.IdEnrollment where @IndexNumber=IndexNumber";
+                 com.Parameters.AddWithValue("IndexNumber", IndexNumber);
+                 
+                 con.Open();
+                 SqlDataReader dr = com.ExecuteReader();
+                 while (dr.Read())
+                 {
+                     result += "Semestr: " + dr["Semester"] + ", StartDate: " + dr["StartDate"].ToString();
+                 }
+             }
+             return Ok(result);
+         }
     }
 }
