@@ -27,10 +27,11 @@ namespace cw3.Controllers
                 while (dr.Read())
                 {
                     Studnet studnet = new Studnet();
+                    studnet.IndexNumber = dr["IndexNumber"].ToString();
                     studnet.FirstName = dr["FirstName"].ToString();
                     studnet.LastName = dr["LastName"].ToString();
                     studnet.BirthDate = DateTime.Parse(dr["BirthDate"].ToString());
-                    studnet.nazwaStudniow = dr["Name"].ToString();
+                    studnet.Studies = dr["Name"].ToString();
                     studnet.Semester = (int) dr["Semester"];
                     studnets.Add(studnet);
                 }
