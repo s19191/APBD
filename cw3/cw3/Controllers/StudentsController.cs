@@ -58,7 +58,7 @@ namespace cw3.Controllers
                  SqlDataReader dr = com.ExecuteReader();
                  while (dr.Read())
                  {
-                     result += "Semestr: " + dr["Semester"] + ", StartDate: " + dr["StartDate"].ToString();
+                     result += "Semestr: " + dr["Semester"] + ", StartDate: " + dr["StartDate"];
                  }
              }
              return Ok(result);

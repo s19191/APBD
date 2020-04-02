@@ -88,7 +88,7 @@ namespace cw3.Services
             }
         }
 
-        public void PromoteStudnet(int semester, string studies)
+        public void PromoteStudnet(EnrollmentPromotionsRequest request)
         {
             throw new System.NotImplementedException();
         }
