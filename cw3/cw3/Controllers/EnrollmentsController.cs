@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using cw3.DTOs.Reguests;
+using cw3.DTOs.Responses;
 using cw3.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,16 +21,15 @@ namespace cw3.Controllers
         [HttpPost]
         public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
-            _service.EnrollStudent(request);
-            return Ok(201);
+            EnrollStudentResponse response = _service.EnrollStudent(request);
+            return Ok(201 + response.ToString());
         }
 
         [HttpPost("{promotions}")]
         public IActionResult EnrollPromotions(EnrollmentPromotionsRequest request)
         {
-
-
-            return Ok(200);
+            _service.PromoteStudnet(request);
+            return Ok(201);
         }
     }
 }

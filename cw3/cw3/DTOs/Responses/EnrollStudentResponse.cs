@@ -2,6 +2,6 @@
 {
     public class EnrollStudentResponse
     {
-        
+        private int Semester { get; set; }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Data.SqlClient;
 using cw3.DTOs.Reguests;
+using cw3.DTOs.Responses;
 
 namespace cw3.Services
 {
     public class SqlServerStudentDbService : IStudentDbService
     {
         private const string ConString = "Data Source=db-mssql;Initial Catalog=s19191;Integrated Security=True";
-        public void EnrollStudent(EnrollStudentRequest request)
+        public EnrollStudentResponse EnrollStudent(EnrollStudentRequest request)
         {
             // throw new System.NotImplementedException();
             using (SqlConnection con = new SqlConnection(ConString))
@@ -78,19 +79,25 @@ namespace cw3.Services
                     com.Parameters.AddWithValue("BirthDate", request.BirthDate);
                     com.ExecuteNonQuery();
                     tran.Commit();
+                    EnrollStudentResponse response = new EnrollStudentResponse();
+                    return response;
                     //return Ok(201 + "Semestr: 1");
                 }
                 catch (SqlException ex)
                 {
                     tran.Rollback();
+                    return null;
                     //return BadRequest("Nieznany błąd, operacja wycofana!");
                 }
             }
         }
 
-        public void PromoteStudnet(EnrollmentPromotionsRequest request)
+        public EnrollmentPromotionsResponse PromoteStudnet(EnrollmentPromotionsRequest request)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
+            EnrollmentPromotionsResponse response = new EnrollmentPromotionsResponse();
+
+            return response;
         }
     }
 }
