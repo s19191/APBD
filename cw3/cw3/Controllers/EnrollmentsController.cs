@@ -28,8 +28,8 @@ namespace cw3.Controllers
         [HttpPost("{promotions}")]
         public IActionResult EnrollPromotions(EnrollmentPromotionsRequest request)
         {
-            _service.PromoteStudnet(request);
-            return Ok(201);
+            EnrollmentPromotionsResponse response = _service.PromoteStudnet(request);
+            return Ok(201 + response.ToString());
         }
     }
 }

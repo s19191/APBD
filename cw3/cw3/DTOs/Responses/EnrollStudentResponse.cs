@@ -3,5 +3,10 @@
     public class EnrollStudentResponse
     {
         private int Semester { get; set; }
+
+        public EnrollmentPromotionsResponse(int Semester)
+        {
+            
+        }
     }
 }

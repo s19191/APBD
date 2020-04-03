@@ -16,7 +16,7 @@ namespace cw3.Services
             {
                 com.Connection = con;
                 con.Open();
-                var tran = con.BeginTransaction();
+                SqlTransaction tran = con.BeginTransaction();
                 com.Transaction = tran;
                 try
                 {
@@ -50,8 +50,7 @@ namespace cw3.Services
                         maxIdEnrollment = (int) dr[0] + 1;
                         dr.Close();
                         DateTime today = DateTime.Today;
-                        com.CommandText = "insert into Enrollment(IdEnrollment, Semester, IdStudy, StartDate) values(" +
-                                          maxIdEnrollment + ", 1," + IdStudy + ", @today)";
+                        com.CommandText = "insert into Enrollment(IdEnrollment, Semester, IdStudy, StartDate) values(" + maxIdEnrollment + ", 1," + IdStudy + ", @today)";
                         com.Parameters.AddWithValue("today", today);
                         com.ExecuteNonQuery();
                     }
@@ -69,15 +68,13 @@ namespace cw3.Services
                         tran.Rollback();
                         //return BadRequest("Student o podanym indexie już istnieje!");
                     }
-
                     dr.Close();
-                    com.CommandText =
-                        "insert into Student(IndexNumber, FirstName, LastName, BirthDate, IdEnrollment) values(@IndexNumber, @FirstName, @LastName, @BirthDate, " +
-                        maxIdEnrollment + ")";
+                    com.CommandText = "insert into Student(IndexNumber, FirstName, LastName, BirthDate, IdEnrollment) values(@IndexNumber, @FirstName, @LastName, @BirthDate, " + maxIdEnrollment + ")";
                     com.Parameters.AddWithValue("FirstName", request.FirstName);
                     com.Parameters.AddWithValue("LastName", request.LastName);
                     com.Parameters.AddWithValue("BirthDate", request.BirthDate);
                     com.ExecuteNonQuery();
+                    dr.Close();
                     tran.Commit();
                     EnrollStudentResponse response = new EnrollStudentResponse();
                     return response;
