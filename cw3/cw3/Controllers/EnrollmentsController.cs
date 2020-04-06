@@ -26,10 +26,7 @@ namespace cw3.Controllers
             {
                 return Ok(201 + response.ToString());
             }
-            else
-            {
-                return BadRequest(400);
-            }
+            return BadRequest(400);
         }
 
         [HttpPost("{promotions}")]
@@ -40,10 +37,7 @@ namespace cw3.Controllers
             {
                 return Ok(201 + response.ToString());
             }
-            else
-            {
-                return BadRequest(404);
-            }
+            return BadRequest(404);
         }
     }
 }
