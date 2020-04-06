@@ -4,9 +4,14 @@
     {
         private int Semester { get; set; }
 
-        public EnrollmentPromotionsResponse(int Semester)
+        public EnrollStudentResponse(int Semester)
         {
-            
+            this.Semester = Semester;
+        }
+
+        public override string ToString()
+        {
+            return "Semestr: " + Semester;
         }
     }
 }

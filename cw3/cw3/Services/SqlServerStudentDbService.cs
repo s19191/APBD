@@ -26,6 +26,7 @@ namespace cw3.Services
                     if (!dr.Read())
                     {
                         tran.Rollback();
+                        return null;
                         //return BadRequest("Studia nie istnieją!");
                     }
 
@@ -44,6 +45,7 @@ namespace cw3.Services
                         if (!dr.Read())
                         {
                             tran.Rollback();
+                            return null;
                             //return BadRequest("Błąd przy tworzeniu Enrollment!");
                         }
 
@@ -66,6 +68,7 @@ namespace cw3.Services
                     if (dr.Read())
                     {
                         tran.Rollback();
+                        return null;
                         //return BadRequest("Student o podanym indexie już istnieje!");
                     }
                     dr.Close();
@@ -76,7 +79,7 @@ namespace cw3.Services
                     com.ExecuteNonQuery();
                     dr.Close();
                     tran.Commit();
-                    EnrollStudentResponse response = new EnrollStudentResponse();
+                    EnrollStudentResponse response = new EnrollStudentResponse(1);
                     return response;
                     //return Ok(201 + "Semestr: 1");
                 }
@@ -93,7 +96,24 @@ namespace cw3.Services
         {
             //throw new System.NotImplementedException();
             EnrollmentPromotionsResponse response = new EnrollmentPromotionsResponse();
-
+            using (SqlConnection con = new SqlConnection(ConString))
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.Connection = con;
+                con.Open();
+                SqlTransaction tran = con.BeginTransaction();
+                com.Transaction = tran;
+                try
+                {
+                    //return Ok(201 + "Semestr: 1");
+                }
+                catch (SqlException ex)
+                {
+                    tran.Rollback();
+                    return null;
+                    //return BadRequest("Nieznany błąd, operacja wycofana!");
+                }
+            }
             return response;
         }
     }

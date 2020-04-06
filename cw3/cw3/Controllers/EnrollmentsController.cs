@@ -22,14 +22,28 @@ namespace cw3.Controllers
         public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
             EnrollStudentResponse response = _service.EnrollStudent(request);
-            return Ok(201 + response.ToString());
+            if (request != null)
+            {
+                return Ok(201 + response.ToString());
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("{promotions}")]
         public IActionResult EnrollPromotions(EnrollmentPromotionsRequest request)
         {
             EnrollmentPromotionsResponse response = _service.PromoteStudnet(request);
-            return Ok(201 + response.ToString());
+            if (response != null)
+            {
+                return Ok(201 + response.ToString());
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
