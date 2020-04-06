@@ -22,13 +22,13 @@ namespace cw3.Controllers
         public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
             EnrollStudentResponse response = _service.EnrollStudent(request);
-            if (request != null)
+            if (response != null)
             {
                 return Ok(201 + response.ToString());
             }
             else
             {
-                return BadRequest();
+                return BadRequest(400);
             }
         }
 
@@ -42,7 +42,7 @@ namespace cw3.Controllers
             }
             else
             {
-                return BadRequest();
+                return BadRequest(404);
             }
         }
     }

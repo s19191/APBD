@@ -25,16 +25,14 @@ namespace cw3.Services
                     SqlDataReader dr = com.ExecuteReader();
                     if (!dr.Read())
                     {
+                        dr.Close();
                         tran.Rollback();
                         return null;
                         //return BadRequest("Studia nie istnieją!");
                     }
-
                     int IdStudy = (int) dr["IdStudy"];
                     dr.Close();
-                    com.CommandText =
-                        "select a.IdEnrollment from Enrollment a where a.StartDate = (select max(StartDate) from Enrollment where Semester=1 and IdStudy=" +
-                        IdStudy + ")";
+                    com.CommandText = "select a.IdEnrollment from Enrollment a where a.StartDate = (select max(StartDate) from Enrollment where Semester=1 and IdStudy=" + IdStudy + ")";
                     int maxIdEnrollment;
                     dr = com.ExecuteReader();
                     if (!dr.Read())
@@ -44,11 +42,11 @@ namespace cw3.Services
                         dr = com.ExecuteReader();
                         if (!dr.Read())
                         {
+                            dr.Close();
                             tran.Rollback();
                             return null;
                             //return BadRequest("Błąd przy tworzeniu Enrollment!");
                         }
-
                         maxIdEnrollment = (int) dr[0] + 1;
                         dr.Close();
                         DateTime today = DateTime.Today;
@@ -67,6 +65,7 @@ namespace cw3.Services
                     dr = com.ExecuteReader();
                     if (dr.Read())
                     {
+                        dr.Close();
                         tran.Rollback();
                         return null;
                         //return BadRequest("Student o podanym indexie już istnieje!");
@@ -95,7 +94,6 @@ namespace cw3.Services
         public EnrollmentPromotionsResponse PromoteStudnet(EnrollmentPromotionsRequest request)
         {
             //throw new System.NotImplementedException();
-            EnrollmentPromotionsResponse response = new EnrollmentPromotionsResponse();
             using (SqlConnection con = new SqlConnection(ConString))
             using (SqlCommand com = new SqlCommand())
             {
@@ -105,6 +103,13 @@ namespace cw3.Services
                 com.Transaction = tran;
                 try
                 {
+                    com.CommandText = "exec PromoteStudents @Studies, @Semester";
+                    com.Parameters.AddWithValue("Studies", request.Studies);
+                    com.Parameters.AddWithValue("Semester", request.Semester);
+                    com.ExecuteNonQuery();
+                    tran.Commit();
+                    EnrollmentPromotionsResponse response = new EnrollmentPromotionsResponse(request.Semester + 1);
+                    return response;
                     //return Ok(201 + "Semestr: 1");
                 }
                 catch (SqlException ex)
@@ -114,7 +119,6 @@ namespace cw3.Services
                     //return BadRequest("Nieznany błąd, operacja wycofana!");
                 }
             }
-            return response;
         }
     }
 }
