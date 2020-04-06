@@ -103,6 +103,7 @@ namespace cw3.Services
                 com.Transaction = tran;
                 try
                 {
+                    // plik proc_PromoteStudent to procedura napisana w sql, znajduje się w folderze
                     com.CommandText = "exec PromoteStudents @Studies, @Semester";
                     com.Parameters.AddWithValue("Studies", request.Studies);
                     com.Parameters.AddWithValue("Semester", request.Semester);
@@ -110,7 +111,7 @@ namespace cw3.Services
                     tran.Commit();
                     EnrollmentPromotionsResponse response = new EnrollmentPromotionsResponse(request.Semester + 1);
                     return response;
-                    //return Ok(201 + "Semestr: 1");
+                    //return Ok(201 + "Semestr na który studenci zostali przepisani: " + Semester);
                 }
                 catch (SqlException ex)
                 {

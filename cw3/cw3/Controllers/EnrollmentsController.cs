@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data.SqlClient;
-using cw3.DTOs.Reguests;
+﻿using cw3.DTOs.Reguests;
 using cw3.DTOs.Responses;
 using cw3.Services;
 using Microsoft.AspNetCore.Mvc;
