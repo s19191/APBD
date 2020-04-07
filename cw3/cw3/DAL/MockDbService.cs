@@ -11,9 +11,9 @@ namespace cw3.DAL
         {
             _studnets = new List<Studnet>
             {
-                new Studnet {IdStudent = 1, FirstName = "Jan", LastName = "Kowalski"},
-                new Studnet {IdStudent = 2, FirstName = "Anna", LastName = "Malewski"},
-                new Studnet {IdStudent = 3, FirstName = "Andrzej", LastName = "Andrzejewicz"}
+                // new Studnet {IdStudent = 1, FirstName = "Jan", LastName = "Kowalski"},
+                // new Studnet {IdStudent = 2, FirstName = "Anna", LastName = "Malewski"},
+                // new Studnet {IdStudent = 3, FirstName = "Andrzej", LastName = "Andrzejewicz"}
             };
         }
 
