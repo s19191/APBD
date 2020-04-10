@@ -1,18 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using cw3.DAL;
 using cw3.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using MiddleWare3.Middlewares;
 
 namespace cw3
@@ -37,6 +28,8 @@ namespace cw3
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IStudentDbService service)
         {
             app.UseMiddleware<LoggingMiddleware>();
+            
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.Use(async (context, next) =>
             {
@@ -46,7 +39,7 @@ namespace cw3
                     await context.Response.WriteAsync("Musisz podaćnumer indeksu");
                     return;
                 }
-                string index = context.Response.Headers["Index"].ToString();
+                string index = context.Request.Headers["Index"].ToString();
                 bool ifExists = service.CheckIndexNumber(index);
                 if (!ifExists)
                 {

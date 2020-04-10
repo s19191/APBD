@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.IO;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using cw3.DAL;
+using cw3.Services;
 
 namespace MiddleWare3.Middlewares
 {
@@ -18,22 +17,40 @@ namespace MiddleWare3.Middlewares
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, IDbService service)
+        public async Task InvokeAsync(HttpContext context)
         {
-            if (httpContext.Request != null)
+            context.Request.EnableBuffering();
+            if (context.Request != null)
             {
-                string sciezka = httpContext.Request.Path;
-                string querystring = httpContext.Request?.QueryString.ToString();
-                string metoda = httpContext.Request.Method.ToString();
+                string path = context.Request.Path;
+                string method = context.Request.Method;
+                string queryString = context.Request?.QueryString.ToString();
                 string bodyStr = "";
 
-                using (StreamReader reader = new StreamReader(httpContext.Request.Body, Encoding.UTF8, true, 1024, true))
+                using (StreamReader reader = new StreamReader(context.Request.Body, Encoding.UTF8, true, 1024, true))
                 {
                     bodyStr = await reader.ReadToEndAsync();
+                    context.Request.Body.Position = 0;
                 }
-                //logowanie do pliku
+                string logpath = @"D:\APBD\cw3\Log.txt";
+                if (!File.Exists(logpath))
+                {
+                    File.Create(logpath).Dispose();
+                }
+                StreamWriter sw = File.AppendText(logpath);
+                sw.WriteLine("START " + DateTime.Now);
+                sw.WriteLine(method);
+                sw.WriteLine(path);
+                sw.WriteLine(bodyStr);
+                sw.WriteLine(queryString);
+                sw.WriteLine("END " + DateTime.Now);
+                sw.Close();
             }
-            await _next(httpContext);
+
+            if (_next != null)
+            {
+                await _next(context);
+            }
         }
     }
 }

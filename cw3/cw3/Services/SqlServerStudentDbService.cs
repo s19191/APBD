@@ -129,22 +129,15 @@ namespace cw3.Services
             {
                 com.Connection = con;
                 con.Open();
-                try
+                com.CommandText = "select 1 from Student where IndexNumber = @IndexNumber";
+                com.Parameters.AddWithValue("IndexNumber", index);
+                SqlDataReader dr = com.ExecuteReader();
+                if (!dr.Read())
                 {
-                    com.CommandText = "select 1 from Students where IndexNumber = @IndexNumber";
-                    com.Parameters.AddWithValue("IndexNumber", index);
-                    SqlDataReader dr = com.ExecuteReader();
-                    if (!dr.Read())
-                    {
-                        dr.Close();
-                        return false;
-                    }
-                    return true;
-                }
-                catch (SqlException ex)
-                {
+                    dr.Close(); 
                     return false;
                 }
+                return true;
             }
         }
     }

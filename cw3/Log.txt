@@ -1,0 +1,31 @@
+START 10.04.2020 23:55:35
+GET
+/api/students
+
+
+END 10.04.2020 23:55:35
+START 10.04.2020 23:55:35
+GET
+/favicon.ico
+
+
+END 10.04.2020 23:55:35
+START 10.04.2020 23:56:05
+GET
+/api/students
+fggsdfgdfgsdfg
+
+END 10.04.2020 23:56:05
+START 10.04.2020 23:57:19
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 10.04.2020 23:57:19
