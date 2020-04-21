@@ -40,37 +40,44 @@ namespace cw3.Controllers
             {
                 if (response.exsists)
                 {
-                    List<Claim> claims = new List<Claim>();
-                    claims.Add(new Claim(ClaimTypes.NameIdentifier,response.index));
-                    claims.Add(new Claim(ClaimTypes.Name,response.name));
-                    for (int i = 0; i < response.roles.Count; i++)
+                    if (response.passwordCorrect)
                     {
-                        claims.Add(new Claim(ClaimTypes.Role, response.roles[i]));
-                    }
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
-                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                        List<Claim> claims = new List<Claim>();
+                        claims.Add(new Claim(ClaimTypes.NameIdentifier,response.index));
+                        claims.Add(new Claim(ClaimTypes.Name,response.name));
+                        for (int i = 0; i < response.roles.Count; i++)
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, response.roles[i]));
+                        }
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
+                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-                    var token = new JwtSecurityToken
-                    (
-                        issuer: "Gakko",
-                        audience: "Students",
-                        claims: claims,
-                        expires: DateTime.Now.AddMinutes(10),
-                        signingCredentials: creds
-                    );
-                    var refreshToken = Guid.NewGuid();
-                    _service.saveRefreshToken(request.index, refreshToken.ToString());
-                    return Ok(new
-                    {
-                        accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
-                        refreshToken = refreshToken
-                    });
+                        var token = new JwtSecurityToken
+                        (
+                            issuer: "Gakko",
+                            audience: "Students",
+                            claims: claims,
+                            expires: DateTime.Now.AddMinutes(10),
+                            signingCredentials: creds
+                        );
+                        var refreshToken = Guid.NewGuid();
+                        _service.saveRefreshToken(request.index, refreshToken.ToString());
+                        return Ok(new
+                        {
+                            accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
+                            refreshToken = refreshToken
+                        });
+                    }
+                    return BadRequest(401 + " " + response);
                 }
                 return BadRequest(401 + " " + response);
             }
             return BadRequest(401);
         }
 
+        
+        // z racji tego, że nie mam żadnej metody która by zmieniała refreshtoken co większy okres czasu, więc zmieniam go przy każdej zmianie accesstokena, niby powinien refresh się zmieniać rzadziej, ale tak też jest dobrze, bo używamy go co 10 min 
+        // a accesstoken cały czas
         [AllowAnonymous]
         [HttpPost("refresh/{request}")]
         public IActionResult RefreshToken(string request)

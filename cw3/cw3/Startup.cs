@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using cw3.PasswordHashing;
 using cw3.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -37,7 +38,6 @@ namespace cw3
                         IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
                     };
                 });
-            Console.Write(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
             services.AddTransient<IStudentDbService, SqlServerStudentDbService>();
             services.AddControllers().AddXmlSerializerFormatters();
         }

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Security.Claims;
 using cw3.DTOs.Reguests;
 using cw3.DTOs.Responses;
+using cw3.PasswordHashing;
 
 namespace cw3.Services
 {
@@ -151,8 +152,7 @@ namespace cw3.Services
                 con.Open();
                 try
                 {
-                    com.CommandText = "select FirstName, LastName from Student where Password = @haslo and IndexNumber = @index";
-                    com.Parameters.AddWithValue("haslo", request.haslo);
+                    com.CommandText = "select Password, salt from Student where IndexNumber = @index";
                     com.Parameters.AddWithValue("index", request.index);
                     SqlDataReader dr = com.ExecuteReader();
                     if (!dr.Read())
@@ -160,19 +160,31 @@ namespace cw3.Services
                         dr.Close();
                         return null;
                     }
-                    string name = dr["FirstName"] + " " + dr["LastName"];
-                    List<string> claims = new List<string>();
-                    com.CommandText = com.CommandText = "select name from Role inner join StudentRole on StudentRole.idRole = Role.idRole where indexNumber = @index2";
-                    com.Parameters.AddWithValue("index2", request.index);
-                    dr.Close();
-                    dr = com.ExecuteReader();
-                    while (dr.Read())
+                    if (Pbkdf2Hashing.Validate(request.haslo,dr["salt"].ToString(),dr["Password"].ToString()))
                     {
-                        claims.Add(dr["name"].ToString());
+                        com.CommandText = "select FirstName, LastName from Student where IndexNumber = @index";
+                        com.Parameters.AddWithValue("haslo", request.haslo);
+                        dr.Close();
+                        dr = com.ExecuteReader();
+                        if (!dr.Read())
+                        {
+                            dr.Close();
+                            return null;
+                        }
+                        string name = dr["FirstName"] + " " + dr["LastName"];
+                        List<string> claims = new List<string>();
+                        com.CommandText = com.CommandText = "select name from Role inner join StudentRole on StudentRole.idRole = Role.idRole where indexNumber = @index";
+                        dr.Close();
+                        dr = com.ExecuteReader();
+                        while (dr.Read())
+                        {
+                            claims.Add(dr["name"].ToString());
+                        }
+                        dr.Close();
+                        LoginRespone respone = new LoginRespone(request.index, name, claims, true,true);
+                        return respone;
                     }
-                    dr.Close();
-                    LoginRespone respone = new LoginRespone(request.index, name, claims, true);
-                    return respone;
+                    return new LoginRespone(null,null,null,true,false);
                 }
                 catch (SqlException ex)
                 {
@@ -211,7 +223,7 @@ namespace cw3.Services
                     string index = dr["IndexNumber"].ToString();
                     string name = dr["FirstName"].ToString() + " " + dr["LastName"].ToString();
                     List<string> claims = new List<string>();
-                    LoginRespone loginRespone = new LoginRespone(index, name, claims, true);
+                    LoginRespone loginRespone = new LoginRespone(index, name, claims, true, true);
                     refreshTokenResponse respone = new refreshTokenResponse(loginRespone,true);
                     return respone;
                 }
