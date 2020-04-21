@@ -29,3 +29,262 @@ GET
 }
 
 END 10.04.2020 23:57:19
+START 21.04.2020 15:08:39
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 15:08:39
+START 21.04.2020 15:08:41
+GET
+/api/students
+
+
+END 21.04.2020 15:08:41
+START 21.04.2020 15:08:42
+GET
+/favicon.ico
+
+
+END 21.04.2020 15:08:42
+START 21.04.2020 15:09:44
+GET
+/api/students
+
+
+END 21.04.2020 15:09:44
+START 21.04.2020 15:09:44
+GET
+/favicon.ico
+
+
+END 21.04.2020 15:09:44
+START 21.04.2020 15:09:59
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 15:09:59
+START 21.04.2020 15:10:14
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 15:10:14
+START 21.04.2020 15:10:16
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 15:10:16
+START 21.04.2020 15:12:58
+GET
+/api/students
+
+
+END 21.04.2020 15:12:58
+START 21.04.2020 15:13:06
+GET
+/api/students
+
+
+END 21.04.2020 15:13:06
+START 21.04.2020 15:13:16
+GET
+/api/students
+
+
+END 21.04.2020 15:13:16
+START 21.04.2020 15:14:43
+GET
+/api/students
+
+
+END 21.04.2020 15:14:43
+START 21.04.2020 15:14:47
+GET
+/api/students
+
+
+END 21.04.2020 15:14:47
+START 21.04.2020 15:15:08
+GET
+/api/students
+
+
+END 21.04.2020 15:15:08
+START 21.04.2020 15:15:09
+GET
+/api/students
+
+
+END 21.04.2020 15:15:09
+START 21.04.2020 17:02:16
+GET
+/api/students
+
+
+END 21.04.2020 17:02:16
+START 21.04.2020 17:02:16
+GET
+/favicon.ico
+
+
+END 21.04.2020 17:02:16
+START 21.04.2020 17:02:18
+GET
+/api/students
+
+
+END 21.04.2020 17:02:18
+START 21.04.2020 17:02:50
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 17:02:50
+START 21.04.2020 17:03:00
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 17:03:00
+START 21.04.2020 17:03:04
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 17:03:04
+START 21.04.2020 17:03:13
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 17:03:13
+START 21.04.2020 17:03:15
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 17:03:15
+START 21.04.2020 17:03:32
+GET
+/api/students
+
+
+END 21.04.2020 17:03:32
+START 21.04.2020 17:03:32
+GET
+/favicon.ico
+
+
+END 21.04.2020 17:03:32
+START 21.04.2020 17:05:16
+GET
+/api/students
+
+
+END 21.04.2020 17:05:16
+START 21.04.2020 17:05:17
+GET
+/favicon.ico
+
+
+END 21.04.2020 17:05:17
+START 21.04.2020 17:05:38
+GET
+/api/students
+{
+	"indexNumber": "1",
+	"firstName": "Jan",
+	"lastName": "Malanowski",
+	"birthDate": "1998-09-09T00:00:00",
+	"studies": "Informatyka",
+	"semester": 2
+}
+
+END 21.04.2020 17:05:38
+START 21.04.2020 17:06:41
+GET
+/api/students
+
+
+END 21.04.2020 17:06:41
+START 21.04.2020 17:06:41
+GET
+/favicon.ico
+
+
+END 21.04.2020 17:06:41
+START 21.04.2020 22:23:53
+POST
+/api/students
+{
+	"index": "1",
+	"haslo": "haslo"
+}
+
+END 21.04.2020 22:23:53

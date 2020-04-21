@@ -7,6 +7,9 @@ namespace cw3.Services
     {
         EnrollStudentResponse EnrollStudent(EnrollStudentRequest request);
         EnrollmentPromotionsResponse PromoteStudnet(EnrollmentPromotionsRequest request);
-        public bool CheckIndexNumber(string index);
+        bool CheckIndexNumber(string index);
+        LoginRespone Loggining(LoginRequest request);
+        refreshTokenResponse checkRefreshToken(string refreshToken);
+        void saveRefreshToken(string index, string refreshToken);
     }
 }
