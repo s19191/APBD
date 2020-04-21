@@ -62,7 +62,7 @@ namespace cw3.Controllers
                     _service.saveRefreshToken(request.index, refreshToken.ToString());
                     return Ok(new
                     {
-                        sccesstoken = new JwtSecurityTokenHandler().WriteToken(token),
+                        accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
                         refreshToken = refreshToken
                     });
                 }
@@ -102,7 +102,7 @@ namespace cw3.Controllers
                     _service.saveRefreshToken(response.LoginRespone.index, refreshToken.ToString());
                     return Ok(new
                     {
-                        sccesstoken = new JwtSecurityTokenHandler().WriteToken(token),
+                        accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
                         refreshToken = refreshToken
                     });
                 }
