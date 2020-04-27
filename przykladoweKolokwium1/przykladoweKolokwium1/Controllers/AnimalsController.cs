@@ -35,13 +35,12 @@ namespace przykladoweKolokwium1.Controllers
         [HttpPost]
         public IActionResult AddAnimal(AddAnimalsReguest reguest)
         {
-            _service.AddAnimal(reguest);
-
-
-
-
-
-            return Ok();
+            bool IfSucces = _service.AddAnimal(reguest);
+            if (IfSucces)
+            {
+                return Ok();
+            }
+            return BadRequest(400);
         }
     }
 }

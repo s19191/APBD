@@ -17,6 +17,10 @@ namespace przykladoweKolokwium1.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             context.Response.Headers.Add("IndexNumber","s19191");
+            if (_next != null)
+            {
+                await _next(context);
+            }
         }
     }
 }

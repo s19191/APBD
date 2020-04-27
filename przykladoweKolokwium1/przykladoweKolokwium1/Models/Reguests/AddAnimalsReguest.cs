@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace przykladoweKolokwium1.Models.Reguests
@@ -13,5 +14,6 @@ namespace przykladoweKolokwium1.Models.Reguests
         public string DateOfAdmission { get; set; }
         [Required]
         public IntegerType IdOwner { get; set; }
+        public List<Procedure_Animal> ProcedureAnimals { get; set; }
     }
 }

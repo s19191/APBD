@@ -43,6 +43,7 @@ namespace przykladoweKolokwium1
             app.UseMiddleware<MyMiddleware>();
             
             // wersja na szybko, a u góry jak to zrobić w osobnej klasie
+            
             // app.Use(async (context, next) =>
             // {
             //     context.Response.Headers.Add("IndexNumber","s19191");
