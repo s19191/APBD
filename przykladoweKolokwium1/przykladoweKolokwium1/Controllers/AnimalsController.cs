@@ -19,7 +19,7 @@ namespace przykladoweKolokwium1.Controllers
             Configuration = configuration;
             _service = service;
         }
-        [HttpGet("{sortBy}")]
+        [HttpGet]
         public IActionResult GetAnimals(string sortBy)
         {
             List<GetAnimalsResponse> response = _service.GetAnimals(sortBy);

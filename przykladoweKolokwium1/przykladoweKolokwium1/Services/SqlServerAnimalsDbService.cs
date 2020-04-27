@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using przykladoweKolokwium1.Models.Responses;
 
@@ -20,13 +21,20 @@ namespace przykladoweKolokwium1.Services
                 com.Transaction = tran;
                 try
                 {
-                    com.CommandText = "select Name, Type, AdmissionDate, LastName from Animal inner join Owner on Animal.IdOwner = Owner.IdOwner order by @sortBy desc";
+                    if (sortBy == null)
+                    {
+                        sortBy = "AdmissionDate";
+                    }
+                    com.CommandText = "select Name, Type, AdmissionDate, LastName from Animal inner join Owner on Animal.IdOwner = Owner.IdOwner order by "+sortBy+" desc";
+                    // nie wiem czemu dodanie Parametru wszystko psuje
+                    //com.CommandText = "select Name, Type, AdmissionDate, LastName from Animal inner join Owner on Animal.IdOwner = Owner.IdOwner order by @sortBy desc";
                     com.Parameters.AddWithValue("sortBy", sortBy);
-                    var dr = com.ExecuteReader();
+                    SqlDataReader dr = com.ExecuteReader();
                     while (dr.Read())
                     {
                         animalsResponses.Add(new GetAnimalsResponse(dr["Name"].ToString(),dr["Type"].ToString(),dr["AdmissionDate"].ToString(),dr["LastName"].ToString()));
                     }
+                    dr.Close();
                     tran.Commit();
                     return animalsResponses;
                 }
