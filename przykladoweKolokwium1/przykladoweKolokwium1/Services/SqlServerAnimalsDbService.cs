@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using przykladoweKolokwium1.Models.Reguests;
 using przykladoweKolokwium1.Models.Responses;
 
 namespace przykladoweKolokwium1.Services
@@ -44,6 +45,15 @@ namespace przykladoweKolokwium1.Services
                     return null;
                 }
             }
+        }
+
+        public bool AddAnimal(AddAnimalsReguest reguest)
+        {
+            
+
+
+
+            return true;
         }
     }
 }

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using przykladoweKolokwium1.Middlewares;
 using przykladoweKolokwium1.Services;
 
 namespace przykladoweKolokwium1
@@ -37,6 +39,15 @@ namespace przykladoweKolokwium1
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<MyMiddleware>();
+            
+            // wersja na szybko, a u góry jak to zrobić w osobnej klasie
+            // app.Use(async (context, next) =>
+            // {
+            //     context.Response.Headers.Add("IndexNumber","s19191");
+            //     await next();
+            // });
 
             app.UseHttpsRedirection();
 

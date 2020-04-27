@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using przykladoweKolokwium1.Models.Reguests;
 using przykladoweKolokwium1.Models.Responses;
 using przykladoweKolokwium1.Services;
 
@@ -28,6 +30,18 @@ namespace przykladoweKolokwium1.Controllers
                 return BadRequest(400);
             }
             return Ok(response);
+        }
+
+        [HttpPost]
+        public IActionResult AddAnimal(AddAnimalsReguest reguest)
+        {
+            _service.AddAnimal(reguest);
+
+
+
+
+
+            return Ok();
         }
     }
 }
