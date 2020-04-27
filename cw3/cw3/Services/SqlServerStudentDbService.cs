@@ -23,7 +23,7 @@ namespace cw3.Services
                 com.Transaction = tran;
                 try
                 {
-                    com.CommandText = "select IdStudy from Studies where name=@name";
+                    com.CommandText = "select IdStudy from Studies where name = @name";
                     com.Parameters.AddWithValue("name", request.Studies);
                     SqlDataReader dr = com.ExecuteReader();
                     if (!dr.Read())
