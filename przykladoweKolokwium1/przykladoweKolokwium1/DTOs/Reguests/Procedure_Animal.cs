@@ -4,6 +4,7 @@ namespace przykladoweKolokwium1.Models.Reguests
 {
     public class Procedure_Animal
     {
-        public DateTime Date { get; set; }
+        public int IdProcedu { get; set; } 
+        public string Date { get; set; }
     }
 }

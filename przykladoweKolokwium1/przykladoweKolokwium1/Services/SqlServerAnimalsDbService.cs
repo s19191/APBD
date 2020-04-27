@@ -50,12 +50,51 @@ namespace przykladoweKolokwium1.Services
 
         public bool AddAnimal(AddAnimalsReguest reguest)
         {
-            Console.WriteLine(reguest.DateOfAdmission);
-            
-
-
-
-            return true;
+            bool ifCorrect = false;
+            using (SqlConnection con = new SqlConnection(ConString))
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.Connection = con;
+                con.Open();
+                SqlTransaction tran = con.BeginTransaction();
+                com.Transaction = tran;
+                try
+                {
+                    com.CommandText = "INSERT INTO Animal VALUES(@Name, @AnimalType, @DateOfAdmission, @IdOwner)";
+                    com.Parameters.AddWithValue("Name", reguest.Name);
+                    com.Parameters.AddWithValue("AnimalType", reguest.AnimalType);
+                    com.Parameters.AddWithValue("DateOfAdmission", reguest.DateOfAdmission);
+                    com.Parameters.AddWithValue("IdOwner", reguest.IdOwner);
+                    com.ExecuteNonQuery();
+                    if (reguest.ProcedureAnimals != null)
+                    {
+                        com.CommandText = "select IdAnimal from Animal where name = @Name";
+                        SqlDataReader dr = com.ExecuteReader();
+                        if (dr.Read())
+                        {
+                            int IdAnimal = (int) dr[0];
+                            dr.Close();
+                            com.Parameters.AddWithValue("IdAnimal", IdAnimal);
+                            for (int i = 0; i < reguest.ProcedureAnimals.Count; i++)
+                            {
+                                com.CommandText = "INSERT INTO \"Procedure_Animal\" VALUES(@IdPocedu, @IdAnimal, @Date)";
+                                com.Parameters.AddWithValue("IdPocedu", reguest.ProcedureAnimals[i].IdProcedu);
+                                com.Parameters.AddWithValue("Date", reguest.ProcedureAnimals[i].Date);
+                                com.ExecuteNonQuery();
+                            }
+                        }
+                        dr.Close();
+                    }
+                    ifCorrect = true;
+                    tran.Commit();
+                }
+                catch (SqlException ex)
+                {
+                    tran.Rollback();
+                    ifCorrect = false;
+                }
+            }
+            return ifCorrect;
         }
     }
 }
