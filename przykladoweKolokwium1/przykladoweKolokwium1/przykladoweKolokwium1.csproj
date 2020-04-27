@@ -4,4 +4,13 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\Reguests" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+    </ItemGroup>
+
+
 </Project>
