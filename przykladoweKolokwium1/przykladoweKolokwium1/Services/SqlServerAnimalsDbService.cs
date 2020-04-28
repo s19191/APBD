@@ -66,25 +66,27 @@ namespace przykladoweKolokwium1.Services
                     com.Parameters.AddWithValue("DateOfAdmission", reguest.DateOfAdmission);
                     com.Parameters.AddWithValue("IdOwner", reguest.IdOwner);
                     com.ExecuteNonQuery();
-                    if (reguest.ProcedureAnimals != null)
-                    {
-                        com.CommandText = "select IdAnimal from Animal where name = @Name";
-                        SqlDataReader dr = com.ExecuteReader();
-                        if (dr.Read())
-                        {
-                            int IdAnimal = (int) dr[0];
-                            dr.Close();
-                            com.Parameters.AddWithValue("IdAnimal", IdAnimal);
-                            for (int i = 0; i < reguest.ProcedureAnimals.Count; i++)
-                            {
-                                com.CommandText = "INSERT INTO \"Procedure_Animal\" VALUES(@IdPocedu, @IdAnimal, @Date)";
-                                com.Parameters.AddWithValue("IdPocedu", reguest.ProcedureAnimals[i].IdProcedu);
-                                com.Parameters.AddWithValue("Date", reguest.ProcedureAnimals[i].Date);
-                                com.ExecuteNonQuery();
-                            }
-                        }
-                        dr.Close();
-                    }
+                    //Odkomentuj i nie będzie działać przez ten błąd co napisałem, według mnie to to jest wszystko ok
+                    
+                    // if (reguest.ProcedureAnimals != null)
+                    // {
+                    //     com.CommandText = "select IdAnimal from Animal where name = @Name";
+                    //     SqlDataReader dr = com.ExecuteReader();
+                    //     if (dr.Read())
+                    //     {
+                    //         int IdAnimal = (int) dr[0];
+                    //         dr.Close();
+                    //         com.Parameters.AddWithValue("IdAnimal", IdAnimal);
+                    //         for (int i = 0; i < reguest.ProcedureAnimals.Count; i++)
+                    //         {
+                    //             com.CommandText = "INSERT INTO \"Procedure_Animal\" VALUES(@IdPocedu, @IdAnimal, @Date)";
+                    //             com.Parameters.AddWithValue("IdPocedu", reguest.ProcedureAnimals[i].IdProcedu);
+                    //             com.Parameters.AddWithValue("Date", reguest.ProcedureAnimals[i].Date);
+                    //             com.ExecuteNonQuery();
+                    //         }
+                    //     }
+                    //     dr.Close();
+                    // }
                     ifCorrect = true;
                     tran.Commit();
                 }
