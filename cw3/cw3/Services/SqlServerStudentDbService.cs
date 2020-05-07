@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Security.Claims;
 using cw3.DTOs.Reguests;
 using cw3.DTOs.Responses;
+using cw3.PasswordHashing;
 
 namespace cw3.Services
 {
@@ -20,7 +23,7 @@ namespace cw3.Services
                 com.Transaction = tran;
                 try
                 {
-                    com.CommandText = "select IdStudy from Studies where name=@name";
+                    com.CommandText = "select IdStudy from Studies where name = @name";
                     com.Parameters.AddWithValue("name", request.Studies);
                     SqlDataReader dr = com.ExecuteReader();
                     if (!dr.Read())
@@ -93,7 +96,6 @@ namespace cw3.Services
 
         public EnrollmentPromotionsResponse PromoteStudnet(EnrollmentPromotionsRequest request)
         {
-            //throw new System.NotImplementedException();
             using (SqlConnection con = new SqlConnection(ConString))
             using (SqlCommand com = new SqlCommand())
             {
@@ -138,6 +140,121 @@ namespace cw3.Services
                     return false;
                 }
                 return true;
+            }
+        }
+
+        public LoginRespone Loggining(LoginRequest request)
+        {
+            using (SqlConnection con = new SqlConnection(ConString))
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.Connection = con;
+                con.Open();
+                try
+                {
+                    com.CommandText = "select Password, salt from Student where IndexNumber = @index";
+                    com.Parameters.AddWithValue("index", request.index);
+                    SqlDataReader dr = com.ExecuteReader();
+                    if (!dr.Read())
+                    {
+                        dr.Close();
+                        return null;
+                    }
+                    if (Pbkdf2Hashing.Validate(request.haslo,dr["salt"].ToString(),dr["Password"].ToString()))
+                    {
+                        com.CommandText = "select FirstName, LastName from Student where IndexNumber = @index";
+                        com.Parameters.AddWithValue("haslo", request.haslo);
+                        dr.Close();
+                        dr = com.ExecuteReader();
+                        if (!dr.Read())
+                        {
+                            dr.Close();
+                            return null;
+                        }
+                        string name = dr["FirstName"] + " " + dr["LastName"];
+                        List<string> claims = new List<string>();
+                        com.CommandText = com.CommandText = "select name from Role inner join StudentRole on StudentRole.idRole = Role.idRole where indexNumber = @index";
+                        dr.Close();
+                        dr = com.ExecuteReader();
+                        while (dr.Read())
+                        {
+                            claims.Add(dr["name"].ToString());
+                        }
+                        dr.Close();
+                        LoginRespone respone = new LoginRespone(request.index, name, claims, true,true);
+                        return respone;
+                    }
+                    return new LoginRespone(null,null,null,true,false);
+                }
+                catch (SqlException ex)
+                {
+                    return null;
+                }
+            }
+        }
+
+        public refreshTokenResponse checkRefreshToken(string refreshToken)
+        {
+            using (SqlConnection con = new SqlConnection(ConString))
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.Connection = con;
+                con.Open();
+                try
+                {
+                    com.CommandText = "select * from Student where refreshToken = @refreshToken";
+                    com.Parameters.AddWithValue("refreshToken", refreshToken);
+                    SqlDataReader dr = com.ExecuteReader();
+                    if (!dr.Read())
+                    {
+                        dr.Close();
+                        return new refreshTokenResponse(null,false);
+                    }
+                    com.CommandText = "select IndexNumber, FirstName, LastName from Student where Password = @haslo and IndexNumber = @index";
+                    com.Parameters.AddWithValue("haslo", dr["Password"]);
+                    com.Parameters.AddWithValue("index", dr["IndexNumber"]);
+                    dr.Close();
+                    dr = com.ExecuteReader();
+                    if (!dr.Read())
+                    {
+                        dr.Close();
+                        return null;
+                    }
+                    string index = dr["IndexNumber"].ToString();
+                    string name = dr["FirstName"].ToString() + " " + dr["LastName"].ToString();
+                    List<string> claims = new List<string>();
+                    LoginRespone loginRespone = new LoginRespone(index, name, claims, true, true);
+                    refreshTokenResponse respone = new refreshTokenResponse(loginRespone,true);
+                    return respone;
+                }
+                catch (SqlException ex)
+                {
+                    return null;
+                }
+            }
+        }
+
+        public void saveRefreshToken(string index, string refreshToken)
+        {
+            using (SqlConnection con = new SqlConnection(ConString))
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.Connection = con;
+                con.Open();
+                SqlTransaction tran = con.BeginTransaction();
+                com.Transaction = tran;
+                try
+                {
+                    com.CommandText = "update Student set refreshToken = @refreshToken where IndexNumber = @index";
+                    com.Parameters.AddWithValue("refreshToken", refreshToken);
+                    com.Parameters.AddWithValue("index", index);
+                    com.ExecuteNonQuery();
+                    tran.Commit();
+                }
+                catch (SqlException ex)
+                {
+                    tran.Rollback();
+                }
             }
         }
     }
