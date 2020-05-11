@@ -348,7 +348,7 @@ namespace LinqCwiczenia
         /// </summary>
         private void Przyklad10Button_Click(object sender, EventArgs e)
         {
-            /*
+            
              var res = Emps
                  .Select(emp => new
                  {
@@ -359,10 +359,10 @@ namespace LinqCwiczenia
                      .Select(emp => new
                      {
                          Ename = "Brak wartości",
-                         Job = (string) null,
-                         Hiredate = (DateTime?) null
+                         Job = (string?) null,
+                         HireDate = (DateTime?) null
                      }));
-             */
+             
             // to nie działa
 
             /*
