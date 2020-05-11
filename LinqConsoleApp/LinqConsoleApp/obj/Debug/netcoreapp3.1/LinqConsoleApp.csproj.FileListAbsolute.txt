@@ -1,0 +1,13 @@
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\bin\Debug\netcoreapp3.1\LinqConsoleApp.exe
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\bin\Debug\netcoreapp3.1\LinqConsoleApp.deps.json
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\bin\Debug\netcoreapp3.1\LinqConsoleApp.runtimeconfig.json
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\bin\Debug\netcoreapp3.1\LinqConsoleApp.runtimeconfig.dev.json
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\bin\Debug\netcoreapp3.1\LinqConsoleApp.dll
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\bin\Debug\netcoreapp3.1\LinqConsoleApp.pdb
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\obj\Debug\netcoreapp3.1\LinqConsoleApp.csprojAssemblyReference.cache
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\obj\Debug\netcoreapp3.1\LinqConsoleApp.csproj.CoreCompileInputs.cache
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\obj\Debug\netcoreapp3.1\LinqConsoleApp.AssemblyInfoInputs.cache
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\obj\Debug\netcoreapp3.1\LinqConsoleApp.AssemblyInfo.cs
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\obj\Debug\netcoreapp3.1\LinqConsoleApp.dll
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\obj\Debug\netcoreapp3.1\LinqConsoleApp.pdb
+D:\APBD\LinqConsoleApp\LinqConsoleApp\LinqConsoleApp\obj\Debug\netcoreapp3.1\LinqConsoleApp.genruntimeconfig.cache
