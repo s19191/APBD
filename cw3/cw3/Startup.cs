@@ -1,4 +1,3 @@
-using cw3.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,17 +20,17 @@ namespace cw3
             services.AddControllers().AddXmlSerializerFormatters();
         }
         
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IStudentDbService service)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
