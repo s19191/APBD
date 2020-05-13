@@ -16,5 +16,11 @@ namespace cw3.Controllers
             var students = db.Student.ToList();
             return Ok(students);
         }
+        [HttpPost("delete/{Index}")]
+        public IActionResult DeleteStudnet(string Index)
+        {
+            
+            return Ok(200);
+        }
     }
 }
