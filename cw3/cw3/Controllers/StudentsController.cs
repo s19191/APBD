@@ -50,32 +50,57 @@ namespace cw3.Controllers
         {
             String message;
             var db = new s19191Context();
-            var student = new Student
-            {
-                IndexNumber = request.IndexNumber,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                BirthDate = request.BirthDate,
-                Salt = request.Salt,
-                RefreshToken = request.RefreshToken,
-                Password = request.Password
-            };
             var studies = db.Studies.Where(s => s.Name.Equals(request.Studies));
-            if (studies.IsNullOrEmpty())
+            if (!studies.IsNullOrEmpty())
             {
-                message = "400";
+                var MaxStartDate = db.Enrollment
+                    .Max(e => e.StartDate);
+                var enrollment = db.Enrollment
+                    .Where(e => e.StartDate.Equals(MaxStartDate))
+                    .Where(e => e.IdStudy.Equals(studies.First().IdStudy));
+                int maxIdEnrollment;
+                if (enrollment.IsNullOrEmpty())
+                {
+                    maxIdEnrollment = db.Enrollment.Max(e => e.IdEnrollment);
+                    maxIdEnrollment++;
+                    db.Enrollment.Add(new Enrollment
+                    {
+                        IdEnrollment = maxIdEnrollment,
+                        Semester = 1,
+                        IdStudy = studies.First().IdStudy,
+                        StartDate = DateTime.Now
+                    });
+                }
+                else
+                {
+                    maxIdEnrollment = enrollment.First().IdEnrollment;
+                }
+                var idStudnet = db.Student
+                    .Where(s => s.IndexNumber.Equals(request.IndexNumber));
+                if (!idStudnet.IsNullOrEmpty())
+                {
+                    var student = new Student
+                    {
+                        IndexNumber = request.IndexNumber,
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        BirthDate = request.BirthDate,
+                        IdEnrollment = maxIdEnrollment,
+                        Salt = request.Salt,
+                        RefreshToken = request.RefreshToken,
+                        Password = request.Password
+                    };
+                    message = "dodany student";
+                }
+                else
+                {
+                    message = "400";
+                }
             }
             else
             {
-                message = "ala";
+                message = "400";
             }
-            var idStudy = db.Studies.Take()
-            var MaxStartDate = db.Enrollment
-                .Max(e => e.StartDate);
-            var enrollment = db.Enrollment
-                .Where(e => e.StartDate.Equals(MaxStartDate))
-                .Where(e => e.IdStudy.Equals(1));
-
             return Ok(message);
         }
     }
