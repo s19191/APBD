@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using cw3.DTOs.Reguests;
 using cw3.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace cw3.Controllers
 {
@@ -16,11 +18,29 @@ namespace cw3.Controllers
             var students = db.Student.ToList();
             return Ok(students);
         }
+
+        [HttpPost]
+        public IActionResult UpdateStudnet(Student request)
+        {
+            var db = new s19191Context();
+            db.Attach(request);
+            db.Entry(request).State = EntityState.Modified;
+            db.SaveChanges();
+            return Ok("Student zmodyfikowany");
+        }
+        
         [HttpPost("delete/{Index}")]
         public IActionResult DeleteStudnet(string Index)
         {
-            
-            return Ok(200);
+            var db = new s19191Context();
+            var s = new Student
+            {
+                IndexNumber = Index
+            };
+            db.Attach(s);
+            db.Student.Remove(s);
+            db.SaveChanges();
+            return Ok("Studnet usunięty z bazy");
         }
     }
 }
