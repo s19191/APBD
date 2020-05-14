@@ -90,6 +90,8 @@ namespace cw3.Controllers
                         RefreshToken = request.RefreshToken,
                         Password = request.Password
                     };
+                    db.Student.Add(student);
+                    db.SaveChanges();
                     message = "dodany student";
                 }
                 else
@@ -102,6 +104,12 @@ namespace cw3.Controllers
                 message = "400";
             }
             return Ok(message);
+        }
+
+        [HttpPost("promote")]
+        public IActionResult PromoteStudents(EnrollStudentRequest request)
+        {
+            return Ok();
         }
     }
 }
