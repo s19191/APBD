@@ -107,7 +107,7 @@ namespace cw3.Controllers
         }
 
         [HttpPost("promote")]
-        public IActionResult PromoteStudents(EnrollStudentRequest request)
+        public IActionResult PromoteStudents(PromoteStudentsRequest request)
         {
             return Ok();
         }
