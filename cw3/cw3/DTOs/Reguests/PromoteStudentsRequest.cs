@@ -16,6 +16,9 @@ namespace cw3.DTOs.Reguests
         public string LastName { get; set; }
         [Required(ErrorMessage = "Musisz podać datę urodzenia")]
         public DateTime BirthDate { get; set; }
+        public string Salt { get; set; }
+        public string RefreshToken { get; set; }
+        public string Password { get; set; }
         [Required(ErrorMessage = "Musisz podać nazwę kierunku studiów")]
         public string Studies { get; set; }
     }

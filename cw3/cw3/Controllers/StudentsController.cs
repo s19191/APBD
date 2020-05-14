@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Castle.Core.Internal;
 using cw3.DTOs.Reguests;
 using cw3.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +21,7 @@ namespace cw3.Controllers
             return Ok(students);
         }
 
-        [HttpPost]
+        [HttpPost("update")]
         public IActionResult UpdateStudnet(Student request)
         {
             var db = new s19191Context();
@@ -41,6 +43,40 @@ namespace cw3.Controllers
             db.Student.Remove(s);
             db.SaveChanges();
             return Ok("Studnet usunięty z bazy");
+        }
+
+        [HttpPost("enroll")]
+        public IActionResult EnrollStudent(EnrollStudentRequest request)
+        {
+            String message;
+            var db = new s19191Context();
+            var student = new Student
+            {
+                IndexNumber = request.IndexNumber,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                BirthDate = request.BirthDate,
+                Salt = request.Salt,
+                RefreshToken = request.RefreshToken,
+                Password = request.Password
+            };
+            var studies = db.Studies.Where(s => s.Name.Equals(request.Studies));
+            if (studies.IsNullOrEmpty())
+            {
+                message = "400";
+            }
+            else
+            {
+                message = "ala";
+            }
+            var idStudy = db.Studies.Take()
+            var MaxStartDate = db.Enrollment
+                .Max(e => e.StartDate);
+            var enrollment = db.Enrollment
+                .Where(e => e.StartDate.Equals(MaxStartDate))
+                .Where(e => e.IdStudy.Equals(1));
+
+            return Ok(message);
         }
     }
 }
