@@ -140,15 +140,9 @@ namespace cw3.Controllers
                     db.SaveChanges();
                     return Ok("Wszystkich studentów z semestru " + request.Semester + "oraz z kierunku " + request.Studies + " zostali przeniesieni na następny semestr");
                 }
-                else
-                {
-                    return BadRequest(HttpStatusCode.NotFound);
-                }
-            }
-            else
-            {
                 return BadRequest(HttpStatusCode.NotFound);
             }
+            return BadRequest(HttpStatusCode.NotFound);
         }
     }
 }
