@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using Castle.Core.Internal;
 using cw3.DTOs.Reguests;
 using cw3.Models;
@@ -48,7 +49,6 @@ namespace cw3.Controllers
         [HttpPost("enroll")]
         public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
-            String message;
             var db = new s19191Context();
             var studies = db.Studies.Where(s => s.Name.Equals(request.Studies));
             if (!studies.IsNullOrEmpty())
@@ -92,24 +92,63 @@ namespace cw3.Controllers
                     };
                     db.Student.Add(student);
                     db.SaveChanges();
-                    message = "dodany student";
+                    return Ok("dodany student");
+                }
+                return BadRequest(400);
+            }
+            return BadRequest(400);
+        }
+
+        [HttpPost("promotions")]
+        public IActionResult PromoteStudents(PromoteStudentsRequest request)
+        {
+            var db = new s19191Context();
+            var IdStudy = db.Studies
+                .Where(s => s.Name.Equals(request.Studies));
+            if (!IdStudy.IsNullOrEmpty())
+            {
+                var IdEnrollment = db.Enrollment
+                    .Where(e => e.IdStudy.Equals(IdStudy.First().IdStudy) && e.Semester.Equals(request.Semester));
+                if (!IdEnrollment.IsNullOrEmpty())
+                {
+                    var tmp = db.Enrollment
+                        .Where(e => e.IdStudy.Equals(IdStudy.First().IdStudy) && e.Semester.Equals(request.Semester + 1));
+                    Enrollment EnrollmentInserting = null;
+                    if (tmp.IsNullOrEmpty())
+                    {
+                        int maxIdEnrollment = db.Enrollment.Max(e => e.IdEnrollment);
+                        EnrollmentInserting = new Enrollment
+                        {
+                            IdEnrollment = maxIdEnrollment + 1,
+                            Semester = request.Semester + 1,
+                            IdStudy = IdStudy.First().IdStudy,
+                            StartDate = DateTime.Today
+                        };
+                        db.Enrollment.Add(EnrollmentInserting);
+                    }
+                    else
+                    {
+                        EnrollmentInserting = tmp.First();
+                    }
+                    int IdEnrollmentInserting = EnrollmentInserting.IdEnrollment;
+                    var update = db.Student
+                        .Where(s => s.IdEnrollment.Equals(IdEnrollment.First().IdEnrollment));
+                    foreach (var student in update)
+                    {
+                        student.IdEnrollment = IdEnrollmentInserting;
+                    }
+                    db.SaveChanges();
+                    return Ok("Wszystkich studentów z semestru " + request.Semester + "oraz z kierunku " + request.Studies + " zostali przeniesieni na następny semestr");
                 }
                 else
                 {
-                    message = "400";
+                    return BadRequest(HttpStatusCode.NotFound);
                 }
             }
             else
             {
-                message = "400";
+                return BadRequest(HttpStatusCode.NotFound);
             }
-            return Ok(message);
-        }
-
-        [HttpPost("promote")]
-        public IActionResult PromoteStudents(PromoteStudentsRequest request)
-        {
-            return Ok();
         }
     }
 }
