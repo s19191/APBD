@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using Castle.Core.Internal;
 using cw3.DTOs.Reguests;
+using cw3.DTOs.Responses;
 using cw3.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -93,17 +93,13 @@ namespace cw3.Controllers
                     };
                     db.Student.Add(student);
                     db.SaveChanges();
-                    var students = db.Student;
-                    string finalStudents = "";
-                    foreach (var s in students)
-                    {
-                        finalStudents += s.ToString() + "\n";
-                    }
-                    return Ok("dodany student\n" + finalStudents);
+                    var allStudents = db.Student.ToList();
+                    EnrollStudentResponse response = new EnrollStudentResponse(allStudents, student, request.Studies);
+                    return Ok(response.ToString());
                 }
-                return BadRequest(400);
+                return BadRequest(400 + ", student o podanym indexie już istnieje");
             }
-            return BadRequest(400);
+            return BadRequest(400 + ", podane Studia nie istnieją");
         }
 
         [HttpPost("promotions")]
@@ -111,45 +107,41 @@ namespace cw3.Controllers
         {
             var db = new s19191Context();
             var IdStudy = db.Studies
-                .Where(s => s.Name.Equals(request.Studies));
-            if (!IdStudy.IsNullOrEmpty())
+                .FirstOrDefault(s => s.Name.Equals(request.Studies));
+            if (IdStudy != null)
             {
                 var IdEnrollment = db.Enrollment
-                    .Where(e => e.IdStudy.Equals(IdStudy.First().IdStudy) && e.Semester.Equals(request.Semester));
-                if (!IdEnrollment.IsNullOrEmpty())
+                    .FirstOrDefault(e => e.IdStudy.Equals(IdStudy.IdStudy) && e.Semester.Equals(request.Semester));
+                if (IdEnrollment != null)
                 {
-                    var tmp = db.Enrollment
-                        .Where(e => e.IdStudy.Equals(IdStudy.First().IdStudy) && e.Semester.Equals(request.Semester + 1));
-                    Enrollment EnrollmentInserting = null;
-                    if (tmp.IsNullOrEmpty())
+                    var EnrollmentInserting = db.Enrollment
+                        .FirstOrDefault(e => e.IdStudy.Equals(IdStudy.IdStudy) && e.Semester.Equals(request.Semester + 1));
+                    if (EnrollmentInserting == null)
                     {
                         int maxIdEnrollment = db.Enrollment.Max(e => e.IdEnrollment);
                         EnrollmentInserting = new Enrollment
                         {
                             IdEnrollment = maxIdEnrollment + 1,
                             Semester = request.Semester + 1,
-                            IdStudy = IdStudy.First().IdStudy,
+                            IdStudy = IdStudy.IdStudy,
                             StartDate = DateTime.Today
                         };
                         db.Enrollment.Add(EnrollmentInserting);
                     }
-                    else
-                    {
-                        EnrollmentInserting = tmp.First();
-                    }
                     int IdEnrollmentInserting = EnrollmentInserting.IdEnrollment;
                     var update = db.Student
-                        .Where(s => s.IdEnrollment.Equals(IdEnrollment.First().IdEnrollment));
+                        .Where(s => s.IdEnrollment.Equals(IdEnrollment.IdEnrollment));
                     foreach (var student in update)
                     {
                         student.IdEnrollment = IdEnrollmentInserting;
                     }
                     db.SaveChanges();
-                    return Ok("Wszystkich studentów z semestru " + request.Semester + "oraz z kierunku " + request.Studies + " zostali przeniesieni na następny semestr");
+                    PromoteStudentResponse response = new PromoteStudentResponse(request.Studies, request.Semester);
+                    return Ok(response.ToString());
                 }
                 return BadRequest(HttpStatusCode.NotFound);
             }
-            return BadRequest(HttpStatusCode.NotFound);
+            return BadRequest(HttpStatusCode.NotFound + ", podane Studia nie istnieją");
         }
     }
 }

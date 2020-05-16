@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace cw3.Models
 {
@@ -15,5 +14,12 @@ namespace cw3.Models
         public string Password { get; set; }
 
         public virtual Enrollment IdEnrollmentNavigation { get; set; }
+
+        public override string ToString()
+        {
+            return "IndexNumber: " + IndexNumber + ", FirstName: " + FirstName + ", LastName: " + LastName +
+                   ", BirthDate: " + BirthDate + ", IdEnrollment: " + IdEnrollment + ", Salt: " + Salt +
+                   ", RefreshToken: " + RefreshToken + ", Password: " + Password + ".";
+        }
     }
 }
