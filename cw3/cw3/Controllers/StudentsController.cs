@@ -50,16 +50,17 @@ namespace cw3.Controllers
         public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
             var db = new s19191Context();
-            var studies = db.Studies.Where(s => s.Name.Equals(request.Studies));
-            if (!studies.IsNullOrEmpty())
+            var studies = db.Studies
+                .FirstOrDefault(s => s.Name.Equals(request.Studies));
+            if (studies != null)
             {
-                var MaxStartDate = db.Enrollment
+                var maxStartDate = db.Enrollment
                     .Max(e => e.StartDate);
                 var enrollment = db.Enrollment
-                    .Where(e => e.StartDate.Equals(MaxStartDate))
-                    .Where(e => e.IdStudy.Equals(studies.First().IdStudy));
+                    .Where(e => e.StartDate.Equals(maxStartDate))
+                    .FirstOrDefault(e => e.IdStudy.Equals(studies.IdStudy));
                 int maxIdEnrollment;
-                if (enrollment.IsNullOrEmpty())
+                if (enrollment == null)
                 {
                     maxIdEnrollment = db.Enrollment.Max(e => e.IdEnrollment);
                     maxIdEnrollment++;
@@ -67,17 +68,17 @@ namespace cw3.Controllers
                     {
                         IdEnrollment = maxIdEnrollment,
                         Semester = 1,
-                        IdStudy = studies.First().IdStudy,
+                        IdStudy = studies.IdStudy,
                         StartDate = DateTime.Now
                     });
                 }
                 else
                 {
-                    maxIdEnrollment = enrollment.First().IdEnrollment;
+                    maxIdEnrollment = enrollment.IdEnrollment;
                 }
                 var idStudnet = db.Student
-                    .Where(s => s.IndexNumber.Equals(request.IndexNumber));
-                if (!idStudnet.IsNullOrEmpty())
+                    .FirstOrDefault(s => s.IndexNumber.Equals(request.IndexNumber));
+                if (idStudnet == null)
                 {
                     var student = new Student
                     {
@@ -92,7 +93,13 @@ namespace cw3.Controllers
                     };
                     db.Student.Add(student);
                     db.SaveChanges();
-                    return Ok("dodany student");
+                    var students = db.Student;
+                    string finalStudents = "";
+                    foreach (var s in students)
+                    {
+                        finalStudents += s.ToString() + "\n";
+                    }
+                    return Ok("dodany student\n" + finalStudents);
                 }
                 return BadRequest(400);
             }
