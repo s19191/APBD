@@ -1,17 +1,29 @@
-﻿namespace cw3.DTOs.Responses
+﻿using System.Collections.Generic;
+using cw3.Models;
+
+namespace cw3.DTOs.Responses
 {
     public class EnrollStudentResponse
     {
-        private int Semester { get; set; }
+        public List<Student> allStudents { get; set; }
+        public Student student { get; set; }
+        public string studies { get; set; }
 
-        public EnrollStudentResponse(int Semester)
+        public EnrollStudentResponse(List<Student> allStudents, Student student, string studies)
         {
-            this.Semester = Semester;
+            this.allStudents = allStudents;
+            this.student = student;
+            this.studies = studies;
         }
-
+        
         public override string ToString()
         {
-            return "Semestr: " + Semester;
+            string tmp = "";
+            foreach (var student in allStudents)
+            {
+                tmp += student + "\n";
+            }
+            return "Student: " + student + " zosytał dodany do bazy danych na studia: " + studies + ".\nLista studentów znajujących się aktualnie w bazie danych:\n" + tmp;
         }
     }
 }

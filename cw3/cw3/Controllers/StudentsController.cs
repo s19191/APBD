@@ -1,169 +1,147 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Linq;
+using System.Net;
 using cw3.DTOs.Reguests;
 using cw3.DTOs.Responses;
 using cw3.Models;
-using cw3.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 
 namespace cw3.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "employee")]
     [Route("api/students")]
     public class StudentsController : ControllerBase
     {
-        private const string ConString = "Data Source=db-mssql;Initial Catalog=s19191;Integrated Security=True";
-        public IConfiguration Configuration { get; set; }
-        
-        private IStudentDbService _service;
-        
-        public StudentsController(IConfiguration configuration, IStudentDbService service)
-        {
-            Configuration = configuration;
-            _service = service;
-        }
-        
-        [AllowAnonymous]
-        [HttpPost]
-        public IActionResult Login(LoginRequest request)
-        {
-            LoginRespone response = _service.Loggining(request);
-            if (response != null)
-            {
-                if (response.exsists)
-                {
-                    if (response.passwordCorrect)
-                    {
-                        List<Claim> claims = new List<Claim>();
-                        claims.Add(new Claim(ClaimTypes.NameIdentifier,response.index));
-                        claims.Add(new Claim(ClaimTypes.Name,response.name));
-                        for (int i = 0; i < response.roles.Count; i++)
-                        {
-                            claims.Add(new Claim(ClaimTypes.Role, response.roles[i]));
-                        }
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
-                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-                        var token = new JwtSecurityToken
-                        (
-                            issuer: "Gakko",
-                            audience: "Students",
-                            claims: claims,
-                            expires: DateTime.Now.AddMinutes(10),
-                            signingCredentials: creds
-                        );
-                        var refreshToken = Guid.NewGuid();
-                        _service.saveRefreshToken(request.index, refreshToken.ToString());
-                        return Ok(new
-                        {
-                            accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
-                            refreshToken = refreshToken
-                        });
-                    }
-                    return BadRequest(401 + " " + response);
-                }
-                return BadRequest(401 + " " + response);
-            }
-            return BadRequest(401);
-        }
-
-        
-        // z racji tego, że nie mam żadnej metody która by zmieniała refreshtoken co większy okres czasu, więc zmieniam go przy każdej zmianie accesstokena, niby powinien refresh się zmieniać rzadziej, ale tak też jest dobrze, bo używamy go co 10 min 
-        // a accesstoken cały czas
-        [AllowAnonymous]
-        [HttpPost("refresh/{request}")]
-        public IActionResult RefreshToken(string request)
-        {
-            refreshTokenResponse response = _service.checkRefreshToken(request);
-            if (response != null)
-            {
-                if (response.refreshTokenchecker)
-                {
-                    List<Claim> claims = new List<Claim>();
-                    claims.Add(new Claim(ClaimTypes.NameIdentifier,response.LoginRespone.index));
-                    claims.Add(new Claim(ClaimTypes.Name,response.LoginRespone.name));
-                    for (int i = 0; i < response.LoginRespone.roles.Capacity; i++)
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, response.LoginRespone.roles[i]));
-                    }
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
-                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                    var token = new JwtSecurityToken
-                    (
-                        issuer: "Gakko",
-                        audience: "Students",
-                        claims: claims,
-                        expires: DateTime.Now.AddMinutes(10),
-                        signingCredentials: creds
-                    );
-                    var refreshToken = Guid.NewGuid();
-                    _service.saveRefreshToken(response.LoginRespone.index, refreshToken.ToString());
-                    return Ok(new
-                    {
-                        accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
-                        refreshToken = refreshToken
-                    });
-                }
-                return BadRequest(401 + " " + response);
-            }
-            return BadRequest(401);
-        }
-        
         [HttpGet]
         public IActionResult GetStudnet()
         {
-            List<Studnet> studnets = new List<Studnet>();
-            using (SqlConnection con = new SqlConnection(ConString))
-            using (SqlCommand com = new SqlCommand())
-            {
-                com.Connection = con;
-                com.CommandText = "select * from Student inner join Enrollment on Student.IdEnrollment=Enrollment.IdEnrollment inner join Studies on Enrollment.IdStudy=Studies.IdStudy";
-                
-                con.Open();
-                SqlDataReader dr = com.ExecuteReader();
-                while (dr.Read())
-                {
-                    Studnet studnet = new Studnet();
-                    studnet.IndexNumber = dr["IndexNumber"].ToString();
-                    studnet.FirstName = dr["FirstName"].ToString();
-                    studnet.LastName = dr["LastName"].ToString();
-                    studnet.BirthDate = DateTime.Parse(dr["BirthDate"].ToString());
-                    studnet.Studies = dr["Name"].ToString();
-                    studnet.Semester = (int) dr["Semester"];
-                    studnets.Add(studnet);
-                }
-            }
-            return Ok(studnets);
+            var db = new s19191Context();
+            var students = db.Student.ToList();
+            return Ok(students);
         }
 
-        [HttpGet("{IndexNumber}")]
-        public IActionResult GetSemester(string IndexNumber)
+        [HttpPost("update")]
+        public IActionResult UpdateStudnet(Student request)
         {
-            string result = "";
-            using (SqlConnection con = new SqlConnection(ConString))
-            using (SqlCommand com = new SqlCommand())
+            var db = new s19191Context();
+            db.Attach(request);
+            db.Entry(request).State = EntityState.Modified;
+            db.SaveChanges();
+            return Ok("Student zmodyfikowany");
+        }
+        
+        [HttpPost("delete/{Index}")]
+        public IActionResult DeleteStudnet(string Index)
+        {
+            var db = new s19191Context();
+            var s = new Student
             {
-                com.Connection = con;
-                com.CommandText = "select * from Enrollment inner join Student on Student.IdEnrollment=Enrollment.IdEnrollment where @IndexNumber=IndexNumber";
-                com.Parameters.AddWithValue("IndexNumber", IndexNumber);
-                 
-                con.Open();
-                SqlDataReader dr = com.ExecuteReader();
-                while (dr.Read())
+                IndexNumber = Index
+            };
+            db.Attach(s);
+            db.Student.Remove(s);
+            db.SaveChanges();
+            return Ok("Studnet usunięty z bazy");
+        }
+
+        [HttpPost("enroll")]
+        public IActionResult EnrollStudent(EnrollStudentRequest request)
+        {
+            var db = new s19191Context();
+            var studies = db.Studies
+                .FirstOrDefault(s => s.Name.Equals(request.Studies));
+            if (studies != null)
+            {
+                var maxStartDate = db.Enrollment
+                    .Max(e => e.StartDate);
+                var enrollment = db.Enrollment
+                    .Where(e => e.StartDate.Equals(maxStartDate))
+                    .FirstOrDefault(e => e.IdStudy.Equals(studies.IdStudy));
+                int maxIdEnrollment;
+                if (enrollment == null)
                 {
-                    result += "Semestr: " + dr["Semester"] + ", StartDate: " + dr["StartDate"];
+                    maxIdEnrollment = db.Enrollment.Max(e => e.IdEnrollment);
+                    maxIdEnrollment++;
+                    db.Enrollment.Add(new Enrollment
+                    {
+                        IdEnrollment = maxIdEnrollment,
+                        Semester = 1,
+                        IdStudy = studies.IdStudy,
+                        StartDate = DateTime.Now
+                    });
                 }
+                else
+                {
+                    maxIdEnrollment = enrollment.IdEnrollment;
+                }
+                var idStudnet = db.Student
+                    .FirstOrDefault(s => s.IndexNumber.Equals(request.IndexNumber));
+                if (idStudnet == null)
+                {
+                    var student = new Student
+                    {
+                        IndexNumber = request.IndexNumber,
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        BirthDate = request.BirthDate,
+                        IdEnrollment = maxIdEnrollment,
+                        Salt = request.Salt,
+                        RefreshToken = request.RefreshToken,
+                        Password = request.Password
+                    };
+                    db.Student.Add(student);
+                    db.SaveChanges();
+                    var allStudents = db.Student.ToList();
+                    EnrollStudentResponse response = new EnrollStudentResponse(allStudents, student, request.Studies);
+                    return Ok(response.ToString());
+                }
+                return BadRequest(400 + ", student o podanym indexie już istnieje");
             }
-            return Ok(result);
+            return BadRequest(400 + ", podane Studia nie istnieją");
+        }
+
+        [HttpPost("promotions")]
+        public IActionResult PromoteStudents(PromoteStudentsRequest request)
+        {
+            var db = new s19191Context();
+            var IdStudy = db.Studies
+                .FirstOrDefault(s => s.Name.Equals(request.Studies));
+            if (IdStudy != null)
+            {
+                var IdEnrollment = db.Enrollment
+                    .FirstOrDefault(e => e.IdStudy.Equals(IdStudy.IdStudy) && e.Semester.Equals(request.Semester));
+                if (IdEnrollment != null)
+                {
+                    var EnrollmentInserting = db.Enrollment
+                        .FirstOrDefault(e => e.IdStudy.Equals(IdStudy.IdStudy) && e.Semester.Equals(request.Semester + 1));
+                    if (EnrollmentInserting == null)
+                    {
+                        int maxIdEnrollment = db.Enrollment.Max(e => e.IdEnrollment);
+                        EnrollmentInserting = new Enrollment
+                        {
+                            IdEnrollment = maxIdEnrollment + 1,
+                            Semester = request.Semester + 1,
+                            IdStudy = IdStudy.IdStudy,
+                            StartDate = DateTime.Today
+                        };
+                        db.Enrollment.Add(EnrollmentInserting);
+                    }
+                    int IdEnrollmentInserting = EnrollmentInserting.IdEnrollment;
+                    var update = db.Student
+                        .Where(s => s.IdEnrollment.Equals(IdEnrollment.IdEnrollment));
+                    foreach (var student in update)
+                    {
+                        student.IdEnrollment = IdEnrollmentInserting;
+                    }
+                    db.SaveChanges();
+                    PromoteStudentResponse response = new PromoteStudentResponse(request.Studies, request.Semester);
+                    return Ok(response.ToString());
+                }
+                return BadRequest(HttpStatusCode.NotFound);
+            }
+            return BadRequest(HttpStatusCode.NotFound + ", podane Studia nie istnieją");
         }
     }
 }
