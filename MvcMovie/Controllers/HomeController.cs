@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using cw12.Models;
+using MvcMovie.Models;
 
-namespace cw12.Controllers
+namespace MvcMovie.Controllers
 {
     public class HomeController : Controller
     {
