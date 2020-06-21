@@ -10,7 +10,7 @@ namespace AdvertApi.Services
     {
         public Client checkRefreshToken(string refreshToken);
         public LoginRespone Loggining(LoginRequest request);
-        public Client Registration(RegisterRequest request);
+        public RegisterResponse Registration(RegisterRequest request);
         public void saveRefreshToken(string Login, string refreshToken);
         public IEnumerable<GetCampaignsResponse> GetCampaigns();
         public AddCampaignResponse AddCampaign(AddCampaignRequest request);

@@ -1,4 +1,5 @@
-﻿using AdvertApi.DTOs.Requests;
+﻿using System.Linq;
+using AdvertApi.DTOs.Requests;
 using AdvertApi.DTOs.Responses;
 using AdvertApi.Exceptions;
 using AdvertApi.Services;
@@ -34,7 +35,7 @@ namespace AdvertApi.Controllers
             try
             {
                 AddCampaignResponse response = _service.AddCampaign(request);
-                return Created("Utworzono nową kampanie", response);
+                return Ok(response);
             }
             catch (NoSuchClientException e)
             {

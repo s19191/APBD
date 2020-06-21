@@ -13,18 +13,5 @@ namespace AdvertApi.DTOs.Responses
         public string Password { get; set; }
         public string accesstoken { get; set; }
         public string refreshToken { get; set; }
-
-        public RegisterResponse(Client client, string accesstoken)
-        {
-            client.IdClient = IdClient;
-            client.FirstName = FirstName;
-            client.LastName = LastName;
-            client.Email = Email;
-            client.Phone = Phone;
-            client.Login = Login;
-            client.Password = Password;
-            client.RefreshToken = refreshToken;
-            this.accesstoken = accesstoken;
-        }
     }
 }

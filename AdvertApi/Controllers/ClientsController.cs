@@ -109,11 +109,11 @@ namespace AdvertApi.Controllers
         {
             try
             {
-                Client client = _service.Registration(request);
+                RegisterResponse response = _service.Registration(request);
                 
                 List<Claim> claims = new List<Claim>();
                 claims.Add(new Claim(ClaimTypes.NameIdentifier,request.Login));
-                claims.Add(new Claim(ClaimTypes.Name,client.FirstName + " " + client.LastName));
+                claims.Add(new Claim(ClaimTypes.Name,response.FirstName + " " + response.LastName));
                 claims.Add(new Claim(ClaimTypes.Role,"client"));
                 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
@@ -128,8 +128,9 @@ namespace AdvertApi.Controllers
                     signingCredentials: creds
                 );
                 var refreshToken = Guid.NewGuid();
-                _service.saveRefreshToken(request.Login, refreshToken.ToString());
-                RegisterResponse response = new RegisterResponse(client, new JwtSecurityTokenHandler().WriteToken(token));
+                _service.saveRefreshToken(response.Login, refreshToken.ToString());
+                response.refreshToken = refreshToken.ToString();
+                response.accesstoken = new JwtSecurityTokenHandler().WriteToken(token);
                 return Created("Zarejestrowano urzytkownika", response);
             }
             catch (LoginOccupiedException e)
