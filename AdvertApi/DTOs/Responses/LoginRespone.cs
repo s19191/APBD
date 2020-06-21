@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using AdvertApi.Exceptions;
-
-namespace AdvertApi.DTOs.Responses
+﻿namespace AdvertApi.DTOs.Responses
 {
     public class LoginRespone
     {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AdvertApi.DTOs.Requests;
+﻿using AdvertApi.DTOs.Requests;
 using AdvertApi.DTOs.Responses;
 using AdvertApi.Exceptions;
 using AdvertApi.Services;
