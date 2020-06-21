@@ -40,7 +40,7 @@ namespace AdvertApi.Services
                 .FirstOrDefault(c => c.Login.Equals(request.Login));
             if (client != null)
             {
-                if (Pbkdf2Hashing.Validate(request.Passoword,client.Salt,client.Password))
+                if (Pbkdf2Hashing.Validate(request.Password,client.Salt,client.Password))
                 {
                     return new LoginRespone(client.FirstName, client.LastName);
                 }
@@ -71,7 +71,8 @@ namespace AdvertApi.Services
                     Phone = request.Phone,
                     Login = request.Login,
                     Password = Pbkdf2Hashing.Create(request.Password, Salt),
-                    Salt = Salt
+                    Salt = Salt,
+                    RefreshToken = "tmp"
                 };
                 _context.Client.Add(newClient);
                 _context.SaveChanges();
@@ -90,6 +91,11 @@ namespace AdvertApi.Services
             client.RefreshToken = refreshToken;
             _context.Update(client);
             _context.SaveChanges();
+        }
+
+        public Client aaa()
+        {
+            return _context.Client.FirstOrDefault(c => c.IdClient == 1);
         }
     }
 }
