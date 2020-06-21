@@ -1,4 +1,5 @@
-﻿using AdvertApi.Services;
+﻿using AdvertApi.DTOs.Requests;
+using AdvertApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,14 @@ namespace AdvertApi.Controllers
         public IActionResult GetCampaings()
         {
             return Ok(_service.GetCampaigns());
+        }
+
+        [HttpPost("add")]
+        public IActionResult AddCampaign(AddCampaignRequest request)
+        {
+
+
+            return Ok(29123);
         }
     }
 }

@@ -6,7 +6,6 @@ using AdvertApi.DTOs.Responses;
 using AdvertApi.Exceptions;
 using AdvertApi.Models;
 using AdvertApi.PasswordHashing;
-using Microsoft.EntityFrameworkCore;
 
 namespace AdvertApi.Services
 {
@@ -49,7 +48,7 @@ namespace AdvertApi.Services
             }
             else
             {
-                throw new NoSuchClientException($"Klient o podanym loginie nie istnieje");
+                throw new NoSuchClientException("Klient o podanym loginie nie istnieje");
             }
         }
 
@@ -104,6 +103,135 @@ namespace AdvertApi.Services
                             client = client
                         }));
             return campaigns;
+        }
+
+        public void AddCampaign(AddCampaignRequest request)
+        {
+            if (_context.Building.Count() >= 2)
+            {
+                Building FromBuilding = _context.Building
+                    .FirstOrDefault(b => b.IdBuilding == request.FromBuilding);
+                Building ToBuilding = _context.Building
+                    .FirstOrDefault(b => b.IdBuilding == request.ToBuilding);
+                if (FromBuilding.Street.Equals(ToBuilding.Street) && FromBuilding.City.Equals(ToBuilding.City))
+                {
+                    if (_context.Client.FirstOrDefault(c => c.IdClient == request.IdClient) != null)
+                    {
+                        int newIdCampaign = _context.Campaign.Max(c => c.IdCampaign);
+                        Campaign newCampaign = new Campaign
+                        {
+                            IdCampaign = newIdCampaign,
+                            IdClient = request.IdClient,
+                            StartDate = request.StartDate,
+                            EndDate = request.EndDate,
+                            PricePerSquareMeter = request.PricePerSquareMeter,
+                            FromBuilding = request.FromBuilding,
+                            ToBuilding = request.ToBuilding
+                        };
+                        _context.Campaign.Add(newCampaign);
+                        decimal price = 0;
+                        Banner banner1;
+                        Banner banner2;
+                        // zakładam, że numery budynków znajdują się po tej samej stronie ulicy, niesety czasami niparzyste są pojednej, a parzyste po drugiej,
+                        // ale z racji tego, że nie jest to opisane w wymaganiach to mam takie proste założenie
+                        var buildings = _context.Building
+                            .Where(b => b.StreetNumber >= FromBuilding.StreetNumber &&
+                                        b.StreetNumber <= ToBuilding.StreetNumber)
+                            .OrderBy(b => b.StreetNumber);
+                        Building firtstBuilding = buildings.First();
+                        Building lastBuilding = buildings.Last();
+                        decimal maxHight = buildings
+                            .Max(b => b.Height);
+                        Building maxB = buildings
+                            .FirstOrDefault(b => b.Height == maxHight);
+                        if (maxB.IdBuilding == firtstBuilding.IdBuilding)
+                        {
+                            decimal secondMaxHight = buildings
+                                .Skip(1)
+                                .Max(b => b.Height);
+                            decimal area1 = maxHight;
+                            decimal price1 = area1 * request.PricePerSquareMeter;
+                            banner1 = createBanners(1, price1, newIdCampaign, area1);
+                            decimal area2 = secondMaxHight * (buildings.Count() - 1);
+                            decimal price2 = area2 * request.PricePerSquareMeter;
+                            banner2 = createBanners(2, price2, newIdCampaign, area2);
+                            price = price1 + price2;
+                        }
+                        if (maxB.IdBuilding == lastBuilding.IdBuilding)
+                        {
+                            decimal secondMaxHight = buildings
+                                .SkipLast(1)
+                                .Max(b => b.Height);
+                            decimal area1 = maxHight;
+                            decimal price1 = area1 * request.PricePerSquareMeter;
+                            banner1 = createBanners(1, price1, newIdCampaign, area1);
+                            decimal area2 = secondMaxHight * (buildings.Count() - 1);
+                            decimal price2 = area2 * request.PricePerSquareMeter;
+                            banner2 = createBanners(2, price2, newIdCampaign, area2);
+                            price = price1 + price2;
+                        }
+                        var buildingsAtLeft = buildings
+                            .Where(b => b.StreetNumber < maxB.StreetNumber);
+                        var buildingsAtRight = buildings
+                            .Where(b => b.StreetNumber > maxB.StreetNumber);
+                        decimal leftArea = buildingsAtLeft.Sum(b => b.Height);
+                        decimal rightArea = buildingsAtRight.Sum(b => b.Height);
+                        if (maxHight * buildingsAtLeft.Count() - leftArea >
+                            maxHight * buildingsAtRight.Count() - rightArea)
+                        {
+                            decimal secondMaxHight = buildingsAtRight
+                                .Max(b => b.Height);
+                            decimal area1 = maxHight * (buildingsAtRight.Count() + 1);
+                            decimal price1 = area1 * request.PricePerSquareMeter;
+                            banner1 = createBanners(1, price1, newIdCampaign, area1);
+                            decimal area2 = secondMaxHight * buildingsAtLeft.Count();
+                            decimal price2 = area2 * request.PricePerSquareMeter;
+                            banner2 = createBanners(2, price2, newIdCampaign, area2);
+                            price = price1 + price2;
+                        }
+                        else
+                        {
+                            decimal secondMaxHight = buildingsAtLeft
+                                .Max(b => b.Height);
+                            decimal area1 = secondMaxHight * (buildingsAtLeft.Count() + 1);
+                            decimal price1 = area1 * request.PricePerSquareMeter;
+                            banner1 = createBanners(1, price1, newIdCampaign, area1);
+                            decimal area2 = secondMaxHight * buildingsAtRight.Count();
+                            decimal price2 = area2 * request.PricePerSquareMeter;
+                            banner2 = createBanners(2, price2, newIdCampaign, area2);
+                            price = price1 + price2;
+                        }
+                        _context.Banner.Add(banner1);
+                        _context.Banner.Add(banner2);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new NoSuchClientException("Klient o podanym loginie nie istnieje");
+                    }
+                }
+                else
+                {
+                    throw new NotOnTheSameStreetOrCityException("Budynki nie znajdują się na tej samej ulicy, bądź mieście");
+                }
+            }
+            else
+            {
+                throw new NotEnoughtBuildingsInDatabaseException("W bazie danych nie ma wystarczającej ilości budynków by móc stworzyć nową kampanie");
+            }
+        }
+
+        public Banner createBanners(int Name, decimal price,  int newIdCampaign, decimal Area)
+        {
+            Banner banner = new Banner
+            {
+                IdAdvertisement = _context.Banner.Max(b=>b.IdAdvertisement) + Name,
+                Name = Name,
+                Price = price,
+                IdCampaign = newIdCampaign,
+                Area = Area
+            };
+            return banner;
         }
     }
 }

@@ -13,5 +13,6 @@ namespace AdvertApi.Services
         public Client Registration(RegisterRequest request);
         public void saveRefreshToken(string Login, string refreshToken);
         public IEnumerable<GetCampaignsResponse> GetCampaigns();
+        public void AddCampaign(AddCampaignRequest request);
     }
 }
