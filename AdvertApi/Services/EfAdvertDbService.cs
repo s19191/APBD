@@ -101,11 +101,12 @@ namespace AdvertApi.Services
                         {
                             campaign = campaign,
                             client = client
-                        }));
+                        }))
+                .OrderByDescending(c=>c.campaign.StartDate);
             return campaigns;
         }
 
-        public void AddCampaign(AddCampaignRequest request)
+        public AddCampaignResponse AddCampaign(AddCampaignRequest request)
         {
             if (_context.Building.Count() >= 2)
             {
@@ -204,6 +205,13 @@ namespace AdvertApi.Services
                         _context.Banner.Add(banner1);
                         _context.Banner.Add(banner2);
                         _context.SaveChanges();
+                        return new AddCampaignResponse
+                        {
+                            Campaign = newCampaign,
+                            Banner1 = banner1,
+                            Banner2 = banner2,
+                            TotalPrice = price
+                        };
                     }
                     else
                     {

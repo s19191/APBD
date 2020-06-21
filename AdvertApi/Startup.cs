@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace AdvertApi
 {
@@ -38,6 +39,10 @@ namespace AdvertApi
                 });
             services.AddScoped<IAdvertDbService, EfAdvertDbService>();
             services.AddDbContext<s19191Context>();
+            services.AddSwaggerGen(config =>
+            {
+                config.SwaggerDoc("v1", new OpenApiInfo { Title = "Advertising app API", Version = "v1"});
+            });
             services.AddControllers();
         }
 
@@ -48,6 +53,13 @@ namespace AdvertApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseSwagger();
+            
+            app.UseSwaggerUI(config =>
+            {
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Advertising app API");
+            });
 
             app.UseHttpsRedirection();
 

@@ -1,4 +1,6 @@
 ﻿using AdvertApi.DTOs.Requests;
+using AdvertApi.DTOs.Responses;
+using AdvertApi.Exceptions;
 using AdvertApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +31,23 @@ namespace AdvertApi.Controllers
         [HttpPost("add")]
         public IActionResult AddCampaign(AddCampaignRequest request)
         {
-
-
-            return Ok(29123);
+            try
+            {
+                AddCampaignResponse response = _service.AddCampaign(request);
+                return Created("Utworzono nową kampanie", response);
+            }
+            catch (NoSuchClientException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (NotOnTheSameStreetOrCityException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (NotEnoughtBuildingsInDatabaseException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
