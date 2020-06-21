@@ -8,7 +8,6 @@ using AdvertApi.DTOs.Responses;
 using AdvertApi.Exceptions;
 using AdvertApi.Models;
 using AdvertApi.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -16,11 +15,10 @@ using Microsoft.IdentityModel.Tokens;
 namespace AdvertApi.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "client")]
     [Route("api/clients")]
     public class ClientsController : ControllerBase
     {
-        private IConfiguration Configuration { get; set; }
+        private IConfiguration Configuration { get; }
         private IAdvertDbService _service;
 
         public ClientsController(IConfiguration configuration, IAdvertDbService service)
@@ -28,8 +26,7 @@ namespace AdvertApi.Controllers
             Configuration = configuration;
             _service = service;
         }
-
-        [AllowAnonymous]
+        
         [HttpPost("refresh/{request}")]
         public IActionResult RefreshToken(string request)
         {
@@ -66,7 +63,6 @@ namespace AdvertApi.Controllers
             }
         }
         
-        [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login(LoginRequest request)
         {
@@ -107,8 +103,7 @@ namespace AdvertApi.Controllers
                 return BadRequest(e.Message);
             }
         }
-
-        [AllowAnonymous]
+        
         [HttpPost]
         public IActionResult Register(RegisterRequest request)
         {
@@ -134,11 +129,8 @@ namespace AdvertApi.Controllers
                 );
                 var refreshToken = Guid.NewGuid();
                 _service.saveRefreshToken(request.Login, refreshToken.ToString());
-                return Ok(new
-                {
-                    accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
-                    refreshToken = refreshToken
-                });
+                RegisterResponse response = new RegisterResponse(client, new JwtSecurityTokenHandler().WriteToken(token));
+                return Created("Zarejestrowano urzytkownika", response);
             }
             catch (LoginOccupiedException e)
             {

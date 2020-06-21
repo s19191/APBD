@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AdvertApi.DTOs.Requests;
@@ -6,17 +6,15 @@ using AdvertApi.DTOs.Responses;
 using AdvertApi.Exceptions;
 using AdvertApi.Models;
 using AdvertApi.PasswordHashing;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdvertApi.Services
 {
-    public class SqlServerAdvertDbService : IAdvertDbService
+    public class EfAdvertDbService : IAdvertDbService
     {
-        
         private readonly s19191Context _context;
 
-        public SqlServerAdvertDbService(s19191Context context)
+        public EfAdvertDbService(s19191Context context)
         {
             _context = context;
         }
@@ -93,9 +91,19 @@ namespace AdvertApi.Services
             _context.SaveChanges();
         }
 
-        public Client aaa()
+        public IEnumerable<GetCampaignsResponse> GetCampaigns()
         {
-            return _context.Client.FirstOrDefault(c => c.IdClient == 1);
+            var campaigns = _context.Campaign
+                .Join(_context.Client,
+                    campaing => campaing.IdClient,
+                    client => client.IdClient,
+                    ((campaign, client) =>
+                        new GetCampaignsResponse
+                        {
+                            campaign = campaign,
+                            client = client
+                        }));
+            return campaigns;
         }
     }
 }

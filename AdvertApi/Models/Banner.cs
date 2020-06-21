@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AdvertApi.Models
+﻿namespace AdvertApi.Models
 {
     public partial class Banner
     {

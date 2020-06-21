@@ -1,6 +1,5 @@
 ﻿using AdvertApi.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -11,7 +10,7 @@ namespace AdvertApi.Controllers
     [Route("api/campaigns")]
     public class CampaignController : ControllerBase
     {
-        private IConfiguration Configuration { get; set; }
+        private IConfiguration Configuration { get; }
         private IAdvertDbService _service;
         
         public CampaignController(IConfiguration configuration, IAdvertDbService service)
@@ -20,18 +19,10 @@ namespace AdvertApi.Controllers
             _service = service;
         }
 
-        [HttpGet("aaa")]
-        public IActionResult aaaa()
-        {
-            return Ok(_service.aaa());
-        }
-
-        [HttpPost]
-        [Authorize]
+        [HttpGet]
         public IActionResult GetCampaings()
         {
-            var i = User.Identities.GetEnumerator().Current.Name;
-            return Ok(i);
+            return Ok(_service.GetCampaigns());
         }
     }
 }

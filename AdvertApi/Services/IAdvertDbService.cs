@@ -1,4 +1,6 @@
-﻿using AdvertApi.DTOs.Requests;
+﻿using System.Collections;
+using System.Collections.Generic;
+using AdvertApi.DTOs.Requests;
 using AdvertApi.DTOs.Responses;
 using AdvertApi.Models;
 
@@ -10,6 +12,6 @@ namespace AdvertApi.Services
         public LoginRespone Loggining(LoginRequest request);
         public Client Registration(RegisterRequest request);
         public void saveRefreshToken(string Login, string refreshToken);
-        public Client aaa();
+        public IEnumerable<GetCampaignsResponse> GetCampaigns();
     }
 }
