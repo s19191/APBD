@@ -1,10 +1,7 @@
-﻿using System.Text.Json;
-using AdvertApi.Controllers;
+﻿using AdvertApi.Controllers;
 using AdvertApi.Models;
 using AdvertApi.Services;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
-using Microsoft.IdentityModel.Logging;
 using Moq;
 using NUnit.Framework;
 

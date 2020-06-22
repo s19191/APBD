@@ -3,7 +3,7 @@
 namespace AdvertApiTests.UnitTests.Clients
 {
     [TestFixture]
-    public class ClientsLoginUnitTests
+    public class ClientsRegisterUnitTests
     {
         
     }

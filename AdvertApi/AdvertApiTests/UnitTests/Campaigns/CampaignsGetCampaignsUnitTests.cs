@@ -3,7 +3,6 @@ using AdvertApi.Controllers;
 using AdvertApi.DTOs.Responses;
 using AdvertApi.Models;
 using AdvertApi.Services;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 

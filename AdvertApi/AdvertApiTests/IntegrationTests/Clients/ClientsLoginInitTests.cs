@@ -1,5 +1,8 @@
-﻿namespace AdvertApiTests.IntegrationTests.Clients
+﻿using NUnit.Framework;
+
+namespace AdvertApiTests.IntegrationTests.Clients
 {
+    [TestFixture]
     public class ClientsLoginInitTest
     {
         
