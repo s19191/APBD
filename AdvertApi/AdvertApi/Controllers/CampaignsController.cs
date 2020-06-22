@@ -13,12 +13,10 @@ namespace AdvertApi.Controllers
     [Route("api/campaigns")]
     public class CampaignsController : ControllerBase
     {
-        private IConfiguration Configuration { get; }
         private IAdvertDbService _service;
         
-        public CampaignsController(IConfiguration configuration, IAdvertDbService service)
+        public CampaignsController(IAdvertDbService service)
         {
-            Configuration = configuration;
             _service = service;
         }
 
