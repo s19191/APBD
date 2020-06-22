@@ -1,6 +1,8 @@
 ﻿using AdvertApi.Controllers;
+using AdvertApi.DTOs.Responses;
 using AdvertApi.Models;
 using AdvertApi.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
@@ -8,13 +10,14 @@ using NUnit.Framework;
 namespace AdvertApiTests.UnitTests.Clients
 {
     [TestFixture]
-    class ClientRefreshTokenUnitTests
+    class ClientsRefreshTokenUnitTests
     {
         [Test]
         public void RefreshTokenMethod_CompleteRequest_Correct()
         {
             var dbLayer = new Mock<IAdvertDbService>();
-            dbLayer.Setup(d => d.checkRefreshToken("tmp")).Returns(new Client
+            dbLayer.Setup(d => d.checkRefreshToken("tmp"))
+                .Returns(new Client
             {
                 IdClient = 1,
                 FirstName = "Ala",
@@ -35,6 +38,10 @@ namespace AdvertApiTests.UnitTests.Clients
             var result = cont.RefreshToken("tmp");
             
             Assert.IsNotNull(result);
+            Assert.IsTrue(result is ObjectResult);
+            var vr = (ObjectResult) result;
+            Assert.IsNotNull(vr.Value);
+            var vm = (TokensReponseViewModel) vr.Value;
         }
     }
 }

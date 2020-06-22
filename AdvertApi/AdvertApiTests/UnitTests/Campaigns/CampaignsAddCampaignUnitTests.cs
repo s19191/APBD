@@ -1,8 +1,10 @@
-﻿using AdvertApi.Controllers;
+﻿using System;
+using AdvertApi.Controllers;
 using AdvertApi.DTOs.Requests;
 using AdvertApi.DTOs.Responses;
 using AdvertApi.Models;
 using AdvertApi.Services;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 
@@ -15,13 +17,17 @@ namespace AdvertApiTests.UnitTests.Campaigns
         public void AddCampaignMethod_CompleteRequest_Correct()
         {
             var dbLayer = new Mock<IAdvertDbService>();
-            dbLayer.Setup(d => d.AddCampaign(new AddCampaignRequest
+            AddCampaignRequest request = new AddCampaignRequest
             {
                 IdClient = 1,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddDays(2),
                 PricePerSquareMeter = 25,
                 FromIdBuilding = 1,
                 ToIdBuilding = 4
-            })).Returns(new AddCampaignResponse
+            };
+            dbLayer.Setup(d => d.AddCampaign(request))
+                .Returns(new AddCampaignResponse
             {
                 Campaign = new Campaign
                 {
@@ -32,16 +38,18 @@ namespace AdvertApiTests.UnitTests.Campaigns
             });
             
             var cont = new CampaignsController(dbLayer.Object);
-            
-            var result = cont.AddCampaign(new AddCampaignRequest
-            {
-                IdClient = 1,
-                PricePerSquareMeter = 25,
-                FromIdBuilding = 1,
-                ToIdBuilding = 4
-            });
+
+            var result = cont.AddCampaign(request);
             
             Assert.IsNotNull(result);
+            Assert.IsTrue(result is ObjectResult);
+            var vr = (ObjectResult) result;
+            Assert.IsNotNull(vr.Value);
+            var vm = (AddCampaignResponse) vr.Value;
+            Assert.IsNotNull(vm);
+            Assert.IsTrue(vm.TotalPrice == 25);
+            Assert.IsTrue(vm.Campaign.IdCampaign == 1);
+            Assert.IsTrue(vm.Campaign.IdClient == 1);
         }
     }
 }

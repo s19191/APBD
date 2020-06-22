@@ -51,10 +51,10 @@ namespace AdvertApi.Controllers
                 );
                 var refreshToken = Guid.NewGuid();
                 _service.saveRefreshToken(client.Login, refreshToken.ToString());
-                return Ok(new
+                return Ok(new TokensReponseViewModel
                 {
-                    accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
-                    refreshToken = refreshToken
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    RefreshToken = refreshToken.ToString()
                 });
             }
             catch (FalseRefreshTokenException e)
@@ -68,11 +68,11 @@ namespace AdvertApi.Controllers
         {
             try
             {
-                LoginRespone response = _service.Loggining(request);
+                Client client = _service.Loggining(request);
                 
                 List<Claim> claims = new List<Claim>();
                 claims.Add(new Claim(ClaimTypes.NameIdentifier,request.Login));
-                claims.Add(new Claim(ClaimTypes.Name,response.FirstName + " " + response.LastName));
+                claims.Add(new Claim(ClaimTypes.Name,client.FirstName + " " + client.LastName));
                 claims.Add(new Claim(ClaimTypes.Role,"client"));
                 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
@@ -88,10 +88,10 @@ namespace AdvertApi.Controllers
                 );
                 var refreshToken = Guid.NewGuid();
                 _service.saveRefreshToken(request.Login, refreshToken.ToString());
-                return Ok(new
+                return Ok(new TokensReponseViewModel
                 {
-                    accesstoken = new JwtSecurityTokenHandler().WriteToken(token),
-                    refreshToken = refreshToken
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    RefreshToken = refreshToken.ToString()
                 });
             }
             catch (NoSuchClientException e)
@@ -109,11 +109,11 @@ namespace AdvertApi.Controllers
         {
             try
             {
-                RegisterResponse response = _service.Registration(request);
+                Client client = _service.Registration(request);
                 
                 List<Claim> claims = new List<Claim>();
                 claims.Add(new Claim(ClaimTypes.NameIdentifier,request.Login));
-                claims.Add(new Claim(ClaimTypes.Name,response.FirstName + " " + response.LastName));
+                claims.Add(new Claim(ClaimTypes.Name,client.FirstName + " " + client.LastName));
                 claims.Add(new Claim(ClaimTypes.Role,"client"));
                 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
@@ -128,9 +128,22 @@ namespace AdvertApi.Controllers
                     signingCredentials: creds
                 );
                 var refreshToken = Guid.NewGuid();
-                _service.saveRefreshToken(response.Login, refreshToken.ToString());
-                response.refreshToken = refreshToken.ToString();
-                response.accesstoken = new JwtSecurityTokenHandler().WriteToken(token);
+                _service.saveRefreshToken(client.Login, refreshToken.ToString());
+                RegisterResponse response = new RegisterResponse
+                {
+                    IdClient = client.IdClient,
+                    FirstName = client.FirstName,
+                    LastName = client.LastName,
+                    Email = client.Email,
+                    Phone = client.Phone,
+                    Login = client.Login,
+                    Password = client.Password,
+                    TokensReponse = new TokensReponseViewModel
+                    {
+                        AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                        RefreshToken = refreshToken.ToString()
+                    }
+                };
                 return Created("Zarejestrowano urzytkownika", response);
             }
             catch (LoginOccupiedException e)

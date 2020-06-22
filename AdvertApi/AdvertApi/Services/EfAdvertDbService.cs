@@ -31,7 +31,7 @@ namespace AdvertApi.Services
             }
         }
         
-        public LoginRespone Loggining(LoginRequest request)
+        public Client Loggining(LoginRequest request)
         {
             Client client = _context.Client
                 .FirstOrDefault(c => c.Login.Equals(request.Login));
@@ -39,7 +39,7 @@ namespace AdvertApi.Services
             {
                 if (Pbkdf2Hashing.Validate(request.Password,client.Salt,client.Password))
                 {
-                    return new LoginRespone(client.FirstName, client.LastName);
+                    return client;
                 }
                 else
                 {
@@ -52,7 +52,7 @@ namespace AdvertApi.Services
             }
         }
 
-        public RegisterResponse Registration(RegisterRequest request)
+        public Client Registration(RegisterRequest request)
         {
             Client client = _context.Client
                 .FirstOrDefault(c => c.Login.Equals(request.Login));
@@ -73,16 +73,7 @@ namespace AdvertApi.Services
                 };
                 _context.Client.Add(newClient);
                 _context.SaveChanges();
-                return new RegisterResponse
-                {
-                    IdClient = newClient.IdClient,
-                    FirstName = newClient.FirstName,
-                    LastName = newClient.LastName,
-                    Email = newClient.Email,
-                    Phone = newClient.Phone,
-                    Login = newClient.Login,
-                    Password = request.Password
-                };
+                return newClient;
             }
             else
             {
