@@ -15,7 +15,7 @@ namespace AdvertApiTests.IntegrationTests.Clients
             var dbLayer = new EfAdvertDbService(new s19191Context());
 
             var configuration = new ConfigurationBuilder();
-            configuration.AddJsonFile("D:/APBD/AdvertApi/TestSecret.json");
+            configuration.AddJsonFile("D:/APBD/AdvertApi/AdvertApiTests/TestSecret.json");
             
             var cont = new ClientsController(configuration.Build(), dbLayer);
             
