@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace AdvertApiTests.IntegrationTests.Clients
 {
     [TestFixture]
-    class ClientsRefreshTokenInitTest
+    class ClientsRefreshTokenInitTests
     {
         [Test]
         public void RefreshTokenMethod_CompleteRequest_Correct()

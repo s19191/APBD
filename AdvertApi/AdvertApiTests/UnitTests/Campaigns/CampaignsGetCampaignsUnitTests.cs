@@ -10,10 +10,10 @@ using NUnit.Framework;
 namespace AdvertApiTests.UnitTests.Campaigns
 {
     [TestFixture]
-    public class CampaignsGetCampaignsUnitTest
+    public class CampaignsGetCampaignsUnitTests
     {
         [Test]
-        public void GetClientsMethod_CompleteRequest_Correct()
+        public void GetCampaignsMethod_CompleteRequest_Correct()
         {
             var dbLayer = new Mock<IAdvertDbService>();
             dbLayer.Setup(d => d.GetCampaigns()).Returns(new List<GetCampaignsResponse>

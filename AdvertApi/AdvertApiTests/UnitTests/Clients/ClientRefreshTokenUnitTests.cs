@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace AdvertApiTests.UnitTests.Clients
 {
     [TestFixture]
-    class ClientRefreshTokenUnitTest
+    class ClientRefreshTokenUnitTests
     {
         [Test]
         public void RefreshTokenMethod_CompleteRequest_Correct()
