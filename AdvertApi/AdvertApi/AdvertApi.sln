@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvertApi", "AdvertApi.csproj", "{CF75B096-CFAD-48B7-A6C4-488B977035C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertApiTests", "..\AdvertApiTests\AdvertApiTests.csproj", "{F681BD45-F314-44A7-8E70-B6E7BBD13B96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CF75B096-CFAD-48B7-A6C4-488B977035C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF75B096-CFAD-48B7-A6C4-488B977035C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF75B096-CFAD-48B7-A6C4-488B977035C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF75B096-CFAD-48B7-A6C4-488B977035C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F681BD45-F314-44A7-8E70-B6E7BBD13B96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F681BD45-F314-44A7-8E70-B6E7BBD13B96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F681BD45-F314-44A7-8E70-B6E7BBD13B96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F681BD45-F314-44A7-8E70-B6E7BBD13B96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC66B6DF-0B16-428C-92CE-CA5193F941DD}
+	EndGlobalSection
+EndGlobal
